@@ -46,9 +46,9 @@ export function StepProgressBar({ currentStep, onStepClick }: StepProgressBarPro
                   <div
                     className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 transition-all border-4 ${
                       isCompleted
-                        ? 'bg-primary border-primary text-white shadow-lg shadow-primary/30'
+                        ? 'bg-primary border-primary text-white shadow-sm shadow-primary/30'
                         : isCurrent
-                        ? 'bg-white border-primary text-primary shadow-xl shadow-primary/40 scale-110'
+                        ? 'bg-white border-primary text-primary shadow-md shadow-primary/40 scale-110'
                         : 'bg-white border-muted text-muted-foreground'
                     } ${isClickable ? 'group-hover:scale-110' : ''}`}
                   >
