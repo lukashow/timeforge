@@ -1,0 +1,11 @@
+{
+  "name": "lavapunk-root",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"./backend/pocketbase/pocketbase serve\" \"cd backend && bun dev\" \"cd frontend && bun dev\"",
+    "install": "cd backend && bun install && cd ../frontend && bun install"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
