@@ -201,6 +201,16 @@ export const timetable = {
     }),
   getByClass: (classId: string) => fetchAPI<TimetableEntry[]>(`/api/timetable/${classId}`),
   getByTeacher: (teacherId: string) => fetchAPI<TimetableEntry[]>(`/api/timetable/teacher/${teacherId}`),
+  getLatest: () => fetchAPI<{
+    generationId: string | null;
+    entries: TimetableEntryData[];
+    classes: { id: string; name: string }[];
+    subjects: { id: string; name: string; color: string }[];
+    teachers: { id: string; name: string }[];
+    maxPeriods: number;
+    breaks: { afterPeriod: number; name: string; duration: number }[];
+    staticCourses: { classId: string; day: number; period: number; name: string; color: string }[];
+  }>("/api/timetable/latest"),
 };
 
 // ============ EXCEL IMPORT/EXPORT ============
@@ -293,6 +303,24 @@ export const generation = {
     }),
   getInput: () => fetchAPI<Record<string, unknown>>("/api/generation/input"),
 };
+
+// ============ TIMETABLE ENTRIES ============
+export interface TimetableEntryData {
+  id: string;
+  generation_id: string;
+  class_id: string;
+  subject_id: string | null;
+  teacher_id: string | null;
+  day: number;
+  period: number;
+  is_free: boolean;
+  static_name?: string;  // For static courses (固定课程)
+  expand?: {
+    class_id?: { id: string; name: string };
+    subject_id?: { id: string; name: string; color?: string };
+    teacher_id?: { id: string; name: string };
+  };
+}
 
 // ============ TYPES ============
 // Re-export types from frontend types for convenience

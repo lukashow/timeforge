@@ -3,6 +3,9 @@ import { Home, Users, BookOpen, Library, User, Calendar, ClipboardCheck, FileTex
 import { Input } from '@/components/ui/input'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
+import '@/i18n'
+import { useTranslation } from 'react-i18next'
+
 interface LayoutProps {
   children: ReactNode
   currentStep?: number
@@ -10,31 +13,38 @@ interface LayoutProps {
 
 interface MenuItem {
   icon: typeof Home
-  label: string
+  labelKey: string
   path: string
-  submenu?: { label: string; path: string }[]
+  submenu?: { labelKey: string; path: string }[]
 }
 
 const menuItems: MenuItem[] = [
-  { icon: Home, label: '首页', path: '/' },
-  { icon: Users, label: '学生', path: '/students' },
-  { icon: Users, label: '教师', path: '/teachers', submenu: [
-    { label: '所有教师', path: '/teachers/all' },
-    { label: '教师详情', path: '/teachers/details' }
+  { icon: Home, labelKey: 'menu.home', path: '/' },
+  { icon: Users, labelKey: 'menu.students', path: '/students' },
+  { icon: Users, labelKey: 'menu.teachers', path: '/teachers', submenu: [
+    { labelKey: 'menu.teachers_all', path: '/teachers/all' },
+    { labelKey: 'menu.teachers_details', path: '/teachers/details' }
   ]},
-  { icon: Library, label: '图书馆', path: '/library' },
-  { icon: User, label: '账户', path: '/account' },
-  { icon: Calendar, label: '班级', path: '/class' },
-  { icon: BookOpen, label: '学科', path: '/subject' },
-  { icon: Calendar, label: '课表', path: '/routine' },
-  { icon: ClipboardCheck, label: '考勤', path: '/attendance' },
-  { icon: FileText, label: '考试', path: '/exam' },
-  { icon: Bell, label: '通知', path: '/notice' },
-  { icon: Bus, label: '交通', path: '/transport' },
-  { icon: Building, label: '宿舍', path: '/hostel' },
+  { icon: Library, labelKey: 'menu.library', path: '/library' },
+  { icon: User, labelKey: 'menu.account', path: '/account' },
+  { icon: Calendar, labelKey: 'menu.class', path: '/class' },
+  { icon: BookOpen, labelKey: 'menu.subject', path: '/subject' },
+  { icon: Calendar, labelKey: 'menu.routine', path: '/routine' },
+  { icon: ClipboardCheck, labelKey: 'menu.attendance', path: '/attendance' },
+  { icon: FileText, labelKey: 'menu.exam', path: '/exam' },
+  { icon: Bell, labelKey: 'menu.notice', path: '/notice' },
+  { icon: Bus, labelKey: 'menu.transport', path: '/transport' },
+  { icon: Building, labelKey: 'menu.hostel', path: '/hostel' },
 ]
 
 export function AppLayout({ children }: LayoutProps) {
+  const { t, i18n } = useTranslation()
+
+  const toggleLanguage = () => {
+    const next = i18n.language === 'zh' ? 'en' : 'zh'
+    i18n.changeLanguage(next)
+  }
+
   return (
     <div className="flex h-screen bg-[#F5F5F7]">
       {/* Sidebar */}
@@ -60,7 +70,7 @@ export function AppLayout({ children }: LayoutProps) {
                   className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg mb-1 transition-colors text-gray-600 hover:bg-gray-50"
                 >
                   <Icon className="w-5 h-5" />
-                  <span className="text-sm">{item.label}</span>
+                  <span className="text-sm">{t(item.labelKey)}</span>
                   {item.submenu && (
                     <svg
                       className="w-4 h-4 ml-auto transition-transform"
@@ -87,7 +97,7 @@ export function AppLayout({ children }: LayoutProps) {
             <div className="relative w-96">
               <Input
                 type="text"
-                placeholder="你想找什么？"
+                placeholder={t('search.placeholder')}
                 className="pl-4 pr-10 bg-[#F9FAFB] border-0"
               />
               <svg
@@ -102,6 +112,14 @@ export function AppLayout({ children }: LayoutProps) {
 
             {/* User Section */}
             <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={toggleLanguage}
+                  className="px-2 py-1 rounded-md border border-gray-200 text-sm hover:bg-gray-50"
+                >
+                  {i18n.language === 'zh' ? t('lang.en') : t('lang.zh')}
+                </button>
+              </div>
               <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                 <Bell className="w-5 h-5 text-gray-600" />
               </button>
@@ -117,7 +135,7 @@ export function AppLayout({ children }: LayoutProps) {
                 </Avatar>
                 <div className="text-sm">
                   <div className="font-medium text-gray-900">Priscilla Lily</div>
-                  <div className="text-xs text-gray-500">Admin</div>
+                  <div className="text-xs text-gray-500">{t('user.role_admin')}</div>
                 </div>
                 <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />

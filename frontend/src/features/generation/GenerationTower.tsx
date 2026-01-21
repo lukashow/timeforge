@@ -8,15 +8,17 @@ import type { OptimizationRule, GenerationResult } from '@/types/generation'
 import type { StepProps } from '@/types/common'
 import { generation } from '@/lib/api'
 import type { GenerationResult as APIGenerationResult, GenerationEstimate } from '@/lib/api'
+import { useTranslation } from 'react-i18next'
 
 const presetRules: OptimizationRule[] = [
-  { id: '1', label: '同一科目不在同一天连续出现', description: '保证学习间隔', enabled: true, type: 'preset' },
-  { id: '2', label: '避免教师连续授课3个班级以上', description: '防止教师疲劳', enabled: true, type: 'preset' },
-  { id: '3', label: '双节不可跨过课间时间', description: '双节课必须连续排在休息前或后', enabled: true, type: 'preset' },
-  { id: '4', label: '减少教师在校时间', description: '集中授课时间，减少课间等待', enabled: true, type: 'preset' },
+  { id: '1', labelKey: 'generation.rule1_label', descriptionKey: 'generation.rule1_desc', enabled: true, type: 'preset' },
+  { id: '2', labelKey: 'generation.rule2_label', descriptionKey: 'generation.rule2_desc', enabled: true, type: 'preset' },
+  { id: '3', labelKey: 'generation.rule3_label', descriptionKey: 'generation.rule3_desc', enabled: true, type: 'preset' },
+  { id: '4', labelKey: 'generation.rule4_label', descriptionKey: 'generation.rule4_desc', enabled: true, type: 'preset' },
 ]
 
 export function GenerationTower({ onNext, onBack }: StepProps) {
+  const { t } = useTranslation()
   const [rules, setRules] = useState<OptimizationRule[]>(presetRules)
   const [isGenerating, setIsGenerating] = useState(false)
   const [generationComplete, setGenerationComplete] = useState(false)
@@ -131,10 +133,10 @@ export function GenerationTower({ onNext, onBack }: StepProps) {
 
   const formatTime = (ms: number) => {
     const seconds = Math.floor(ms / 1000)
-    if (seconds < 60) return `${seconds}秒`
+    if (seconds < 60) return t('generation.seconds', { count: seconds })
     const minutes = Math.floor(seconds / 60)
     const remainingSeconds = seconds % 60
-    return `${minutes}分${remainingSeconds}秒`
+    return t('generation.minutes_seconds', { minutes, seconds: remainingSeconds })
   }
 
   const enabledRulesCount = rules.filter(r => r.enabled).length
@@ -142,8 +144,8 @@ export function GenerationTower({ onNext, onBack }: StepProps) {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-semibold text-gray-900 mb-2">第六步：智能排课生成</h1>
-        <p className="text-gray-600">配置优化规则并生成最优课表</p>
+        <h1 className="text-3xl font-semibold text-gray-900 mb-2">{t('generation.step_title_6')}</h1>
+        <p className="text-gray-600">{t('generation.step_desc_6')}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -151,9 +153,9 @@ export function GenerationTower({ onNext, onBack }: StepProps) {
         <div className="lg:col-span-1 space-y-6">
           <Card className="p-6 bg-white border border-gray-200">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">优化规则</h3>
+              <h3 className="text-lg font-semibold text-gray-900">{t('generation.rules_title')}</h3>
               <Badge variant="secondary" className="bg-purple-50 text-primary">
-                已启用 {enabledRulesCount}/{rules.length}
+                {t('generation.enabled_count', { enabled: enabledRulesCount, total: rules.length })}
               </Badge>
             </div>
 
@@ -169,8 +171,8 @@ export function GenerationTower({ onNext, onBack }: StepProps) {
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1">
-                      <div className="font-medium text-gray-900 text-sm">{rule.label}</div>
-                      <div className="text-xs text-gray-600 mt-1">{rule.description}</div>
+                      <div className="font-medium text-gray-900 text-sm">{t((rule as any).labelKey)}</div>
+                      <div className="text-xs text-gray-600 mt-1">{t((rule as any).descriptionKey)}</div>
                     </div>
                     <Switch
                       checked={rule.enabled}
@@ -188,7 +190,7 @@ export function GenerationTower({ onNext, onBack }: StepProps) {
               disabled={isGenerating}
             >
               <Plus className="w-4 h-4 mr-2" />
-              添加自定义规则
+              {t('generation.add_custom_rule')}
             </Button>
           </Card>
         </div>

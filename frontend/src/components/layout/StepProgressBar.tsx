@@ -34,14 +34,13 @@ export function StepProgressBar({ currentStep, onStepClick }: StepProgressBarPro
             {steps.map((step) => {
               const isCompleted = step.number < currentStep
               const isCurrent = step.number === currentStep
-              const isClickable = step.number <= currentStep
+              const isClickable = true  // All steps are clickable
 
               return (
                 <button
                   key={step.number}
-                  onClick={() => isClickable && onStepClick?.(step.number)}
-                  disabled={!isClickable}
-                  className={`flex flex-col items-center group ${isClickable ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+                  onClick={() => onStepClick?.(step.number)}
+                  className="flex flex-col items-center group cursor-pointer"
                 >
                   {/* Circle */}
                   <div

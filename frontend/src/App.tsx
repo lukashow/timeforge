@@ -30,9 +30,8 @@ export default function App() {
   }
 
   const handleStepClick = (step: number) => {
-    if (step <= currentStep) {
-      setCurrentStep(step)
-    }
+    // Allow clicking any step directly
+    setCurrentStep(step)
   }
 
   const renderStep = () => {

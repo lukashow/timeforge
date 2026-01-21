@@ -105,6 +105,10 @@ export interface TimetableInput {
   // ====== TIME SLOT PROPERTIES ======
   timeSlotInfo: TimeSlotInfo[][];   // timeSlotInfo[day][period]
   
+  // ====== STATIC COURSES ======
+  // Fixed slots defined in discipline settings (固定课程)
+  staticCourses: { classIndex: number; day: number; period: number; name: string }[];
+  
   // ====== CONSTRAINT FLAGS ======
   flags: ConstraintFlags;
 }

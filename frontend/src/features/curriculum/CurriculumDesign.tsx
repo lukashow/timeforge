@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
+import { useTranslation } from 'react-i18next'
 import type { SubjectAllocation, StaticCourse, Discipline } from '@/types/curriculum'
 import type { StepProps } from '@/types/common'
 import { WEEKDAYS } from '@/constants/weekdays'
@@ -15,6 +16,7 @@ import { subjects as subjectsApi, disciplines as disciplinesApi } from '@/lib/ap
 import type { Subject, Discipline as ApiDiscipline } from '@/lib/api'
 
 export function CurriculumDesign({ onNext, onBack }: StepProps) {
+  const { t } = useTranslation()
   // Loading states
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -58,7 +60,7 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
           setSelectedDiscipline(transformedDisciplines[0].id)
         }
       } catch (err) {
-        setError('Failed to load data. Please check backend connection.')
+        setError(t('curriculum.error_load'))
         console.error('Failed to load data:', err)
       } finally {
         setLoading(false)
@@ -264,7 +266,7 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
       <div className="p-8 flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-gray-600">Loading curriculum data...</p>
+          <p className="text-gray-600">{t('curriculum.loading')}</p>
         </div>
       </div>
     )
@@ -275,7 +277,7 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
       <div className="p-8 flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <p className="text-red-600 mb-4">{error}</p>
-          <Button onClick={() => window.location.reload()}>Retry</Button>
+          <Button onClick={() => window.location.reload()}>{t('common.retry')}</Button>
         </div>
       </div>
     )
@@ -284,8 +286,8 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-semibold text-gray-900 mb-2">第三步：设定学科组要求</h1>
-        <p className="text-gray-600">为不同学科组配置科目、课时安排和固定课程</p>
+        <h1 className="text-3xl font-semibold text-gray-900 mb-2">{t('curriculum.step_title_3')}</h1>
+        <p className="text-gray-600">{t('curriculum.step_desc_3')}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">

@@ -8,11 +8,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Checkbox } from '@/components/ui/checkbox'
+import { useTranslation } from 'react-i18next'
 import type { StepProps } from '@/types/common'
 import { disciplines as disciplinesApi, teachers as teachersApi, classes as classesApi } from '@/lib/api'
 import type { Discipline, Teacher, ClassRecord } from '@/lib/api'
 
 export function ClassFactory({ onNext, onBack }: StepProps) {
+  const { t } = useTranslation()
   // Loading states
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -50,7 +52,7 @@ export function ClassFactory({ onNext, onBack }: StepProps) {
           setSelectedDiscipline(disciplinesData[0].id)
         }
       } catch (err) {
-        setError('Failed to load data. Please check backend connection.')
+        setError(t('class.error_load'))
         console.error('Failed to load data:', err)
       } finally {
         setLoading(false)
@@ -167,7 +169,7 @@ export function ClassFactory({ onNext, onBack }: StepProps) {
       <div className="p-8 flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-gray-600">Loading classes data...</p>
+          <p className="text-gray-600">{t('class.loading')}</p>
         </div>
       </div>
     )
@@ -178,7 +180,7 @@ export function ClassFactory({ onNext, onBack }: StepProps) {
       <div className="p-8 flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <p className="text-red-600 mb-4">{error}</p>
-          <Button onClick={() => window.location.reload()}>Retry</Button>
+          <Button onClick={() => window.location.reload()}>{t('common.retry')}</Button>
         </div>
       </div>
     )
@@ -187,21 +189,21 @@ export function ClassFactory({ onNext, onBack }: StepProps) {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-semibold text-gray-900 mb-2">第四步：创建班级</h1>
-        <p className="text-gray-600">批量生成班级并智能分配班主任</p>
+        <h1 className="text-3xl font-semibold text-gray-900 mb-2">{t('class.step_title_4')}</h1>
+        <p className="text-gray-600">{t('class.step_desc_4')}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Side - Class Generator */}
         <div className="lg:col-span-1 space-y-6">
           <Card className="p-6 bg-white border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">批量生成班级</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">{t('class.batch_title')}</h3>
             
             <div className="space-y-4">
               <div>
-                <Label className="text-gray-700 mb-2 block">班级前缀</Label>
+                <Label className="text-gray-700 mb-2 block">{t('class.label_prefix')}</Label>
                 <Input
-                  placeholder="如：高一、初二"
+                  placeholder={t('class.placeholder_prefix')}
                   value={prefix}
                   onChange={(e) => setPrefix(e.target.value)}
                   className="bg-[#F9FAFB]"
@@ -210,7 +212,7 @@ export function ClassFactory({ onNext, onBack }: StepProps) {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <Label className="text-gray-700 mb-2 block">起始编号</Label>
+                  <Label className="text-gray-700 mb-2 block">{t('class.label_start')}</Label>
                   <Input
                     type="number"
                     min="1"
@@ -220,7 +222,7 @@ export function ClassFactory({ onNext, onBack }: StepProps) {
                   />
                 </div>
                 <div>
-                  <Label className="text-gray-700 mb-2 block">结束编号</Label>
+                  <Label className="text-gray-700 mb-2 block">{t('class.label_end')}</Label>
                   <Input
                     type="number"
                     min="1"
@@ -232,10 +234,10 @@ export function ClassFactory({ onNext, onBack }: StepProps) {
               </div>
 
               <div>
-                <Label className="text-gray-700 mb-2 block">学科组</Label>
+                <Label className="text-gray-700 mb-2 block">{t('class.label_discipline')}</Label>
                 <Select value={selectedDiscipline} onValueChange={setSelectedDiscipline}>
                   <SelectTrigger className="bg-[#F9FAFB]">
-                    <SelectValue placeholder="选择学科组" />
+                    <SelectValue placeholder={t('class.select_discipline_placeholder')} />
                   </SelectTrigger>
                   <SelectContent>
                     {disciplines.map((disc) => (
@@ -248,7 +250,7 @@ export function ClassFactory({ onNext, onBack }: StepProps) {
 
               <Button onClick={generateClasses} className="w-full bg-primary hover:bg-purple-700">
                 <Plus className="w-4 h-4 mr-2" />
-                生成 {Math.max(0, endNum - startNum + 1)} 个班级
+                {t('class.generate', { count: Math.max(0, endNum - startNum + 1) })}
               </Button>
             </div>
           </Card>
@@ -257,19 +259,17 @@ export function ClassFactory({ onNext, onBack }: StepProps) {
           <Card className="p-6 bg-white border border-gray-200">
             <div className="flex items-center gap-2 mb-4">
               <Wand2 className="w-5 h-5 text-primary" />
-              <h3 className="text-lg font-semibold text-gray-900">智能分配</h3>
+              <h3 className="text-lg font-semibold text-gray-900">{t('class.smart_assign')}</h3>
             </div>
             
-            <p className="text-sm text-gray-600 mb-4">
-              系统将根据教师负载情况，自动为未分配班主任的班级分配合适的教师
-            </p>
+            <p className="text-sm text-gray-600 mb-4">{t('class.smart_assign_desc')}</p>
 
             {hasWarning && (
               <div className="p-3 bg-orange-50 rounded-lg border border-orange-200 mb-4">
                 <div className="flex items-start gap-2">
                   <AlertTriangle className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
                   <div className="text-sm text-orange-800">
-                    当前有 {unassignedCount} 个班级待分配，但可用教师只有 {teachers.filter(t => t.weeklyLoad < 25).length} 位
+                    {t('class.warning', { unassigned: unassignedCount, available: teachers.filter(t => t.weeklyLoad < 25).length })}
                   </div>
                 </div>
               </div>
@@ -282,7 +282,7 @@ export function ClassFactory({ onNext, onBack }: StepProps) {
                 onCheckedChange={(checked) => setAllowMultipleClasses(!!checked)}
               />
               <Label htmlFor="allowMultiple" className="text-sm cursor-pointer">
-                允许同一教师担任多个班级的班主任
+                {t('class.allow_multiple')}
               </Label>
             </div>
 
@@ -293,7 +293,7 @@ export function ClassFactory({ onNext, onBack }: StepProps) {
               disabled={unassignedCount === 0}
             >
               <Users className="w-4 h-4 mr-2" />
-              自动分配班主任
+              {t('class.auto_assign_btn')}
             </Button>
           </Card>
 
@@ -301,11 +301,11 @@ export function ClassFactory({ onNext, onBack }: StepProps) {
           <Card className="p-4 bg-white border border-gray-200">
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <div className="text-gray-600 mb-1">总班级</div>
+                <div className="text-gray-600 mb-1">{t('class.total_classes')}</div>
                 <div className="text-2xl font-semibold text-gray-900">{classes.length}</div>
               </div>
               <div>
-                <div className="text-gray-600 mb-1">已分配班主任</div>
+                <div className="text-gray-600 mb-1">{t('class.assigned_teachers')}</div>
                 <div className="flex items-center gap-2">
                   <span className="text-2xl font-semibold text-green-600">{assignedCount}</span>
                   <span className="text-gray-400">/ {classes.length}</span>
@@ -318,7 +318,7 @@ export function ClassFactory({ onNext, onBack }: StepProps) {
         {/* Right Side - Class List */}
         <div className="lg:col-span-2">
           <Card className="p-6 bg-white border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">班级列表</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">{t('class.class_list')}</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {classes.map((cls) => {
@@ -382,7 +382,7 @@ export function ClassFactory({ onNext, onBack }: StepProps) {
                           </DialogTrigger>
                           <DialogContent>
                             <DialogHeader>
-                              <DialogTitle>选择班主任 - {cls.name}</DialogTitle>
+                              <DialogTitle>{t('class.select_form_teacher_title', { name: cls.name })}</DialogTitle>
                             </DialogHeader>
                             <div className="py-4 space-y-2 max-h-[400px] overflow-y-auto">
                               {teachers.map((t) => {
@@ -405,7 +405,7 @@ export function ClassFactory({ onNext, onBack }: StepProps) {
                                       </div>
                                       <div className="text-left">
                                         <div className="font-medium text-gray-900">{t.name}</div>
-                                        <div className="text-sm text-gray-600">{t.expand?.subject?.name || 'Unknown'}</div>
+                                        <div className="text-sm text-gray-600">{t.expand?.subject?.name || t('class.unknown_subject')}</div>
                                       </div>
                                     </div>
                                     <div className="flex items-center gap-2">
@@ -416,10 +416,10 @@ export function ClassFactory({ onNext, onBack }: StepProps) {
                                           'bg-red-50 text-red-700 border-red-200'
                                         }`}
                                       >
-                                        {loadPercentage < 60 ? '轻松' : loadPercentage < 85 ? '适中' : '繁忙'}
+                                        {loadPercentage < 60 ? t('class.load_easy') : loadPercentage < 85 ? t('class.load_normal') : t('class.load_full')}
                                       </Badge>
                                       {isAssigned && (
-                                        <Badge variant="outline" className="text-xs">已分配</Badge>
+                                        <Badge variant="outline" className="text-xs">{t('class.assigned')}</Badge>
                                       )}
                                     </div>
                                   </button>
@@ -437,8 +437,8 @@ export function ClassFactory({ onNext, onBack }: StepProps) {
               {classes.length === 0 && (
                 <div className="col-span-2 text-center py-12 text-gray-500">
                   <Users className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                  <p>暂无班级</p>
-                  <p className="text-sm">使用左侧表单批量生成班级</p>
+                  <p>{t('class.no_classes')}</p>
+                  <p className="text-sm">{t('class.use_left_form')}</p>
                 </div>
               )}
             </div>
@@ -448,10 +448,10 @@ export function ClassFactory({ onNext, onBack }: StepProps) {
 
       <div className="mt-8 flex justify-between items-center">
         <Button variant="outline" onClick={onBack}>
-          上一步
+          {t('common.prev')}
         </Button>
         <Button className="bg-primary hover:bg-purple-700" onClick={onNext}>
-          确认班级，下一步
+          {t('class.confirm_next')}
         </Button>
       </div>
     </div>

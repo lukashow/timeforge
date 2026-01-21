@@ -16,8 +16,10 @@ import { PERIODS } from '@/constants/periods'
 import { subjects as subjectsApi, teachers as teachersApi, rooms as roomsApi, excel as excelApi } from '@/lib/api'
 import type { Subject, Teacher, Room } from '@/lib/api'
 import * as XLSX from 'xlsx'
+import { useTranslation } from 'react-i18next'
 
 export function ResourceLibrary({ onNext, onBack }: StepProps) {
+  const { t } = useTranslation()
   // Loading states
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -135,7 +137,7 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
         setTeachers(teachersData)
         setRooms(roomsData)
       } catch (err) {
-        setError('Failed to load resources. Please check backend connection.')
+        setError(t('resources.error_load'))
         console.error('Failed to load resources:', err)
       } finally {
         setLoading(false)
@@ -273,7 +275,7 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
       <div className="p-8 flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-gray-600">Loading resources...</p>
+          <p className="text-gray-600">{t('resources.loading')}</p>
         </div>
       </div>
     )
@@ -284,7 +286,7 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
       <div className="p-8 flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <p className="text-red-600 mb-4">{error}</p>
-          <Button onClick={() => window.location.reload()}>Retry</Button>
+          <Button onClick={() => window.location.reload()}>{t('common.retry')}</Button>
         </div>
       </div>
     )
@@ -293,21 +295,21 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-semibold text-gray-900 mb-2">第二步：录入教学资源</h1>
-        <p className="text-gray-600">先创建科目，再添加教师和教室信息</p>
+        <h1 className="text-3xl font-semibold text-gray-900 mb-2">{t('resources.step_title_2')}</h1>
+        <p className="text-gray-600">{t('resources.step_desc_2')}</p>
       </div>
 
       {/* Import Result Dialog */}
       <Dialog open={importResult?.show} onOpenChange={(open) => !open && setImportResult(null)}>
-        <DialogContent>
+            <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {importResult?.type === 'subjects' ? '科目' : importResult?.type === 'teachers' ? '教师' : '教室'}导入结果
+              {(importResult?.type === 'subjects' ? t('resources.type_subjects') : importResult?.type === 'teachers' ? t('resources.type_teachers') : t('resources.type_rooms')) + ' ' + t('resources.import_result')}
             </DialogTitle>
           </DialogHeader>
           <div className="py-4">
             <div className="flex items-center gap-2 text-green-600 mb-4">
-              <Badge className="bg-green-100 text-green-700">成功导入 {importResult?.success || 0} 条</Badge>
+              <Badge className="bg-green-100 text-green-700">{t('resources.import_success', { count: importResult?.success || 0 })}</Badge>
             </div>
             {importResult?.errors && importResult.errors.length > 0 && (
               <div className="space-y-2">
@@ -320,23 +322,23 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
               </div>
             )}
           </div>
-          <Button onClick={() => setImportResult(null)} className="w-full">确定</Button>
+          <Button onClick={() => setImportResult(null)} className="w-full">{t('common.confirm')}</Button>
         </DialogContent>
       </Dialog>
 
       <Tabs defaultValue="subjects" className="w-full">
-        <TabsList className="mb-6">
+          <TabsList className="mb-6">
           <TabsTrigger value="subjects" className="flex items-center gap-2">
             <BookOpen className="w-4 h-4" />
-            科目
+            {t('resources.type_subjects')}
           </TabsTrigger>
           <TabsTrigger value="teachers" className="flex items-center gap-2">
             <User className="w-4 h-4" />
-            老师
+            {t('resources.type_teachers')}
           </TabsTrigger>
           <TabsTrigger value="rooms" className="flex items-center gap-2">
             <Building2 className="w-4 h-4" />
-            教室
+            {t('resources.type_rooms')}
           </TabsTrigger>
         </TabsList>
 
@@ -348,11 +350,11 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
               <div className="flex gap-2">
                 <Button size="sm" variant="outline" className="text-primary border-primary hover:bg-purple-50" onClick={() => downloadTemplate('subjects')}>
                   <Download className="w-4 h-4 mr-2" />
-                  下载模板
+                  {t('resources.download_template')}
                 </Button>
                 <Button size="sm" variant="outline" className="text-primary border-primary hover:bg-purple-50" onClick={() => subjectsFileInputRef.current?.click()}>
                   <Upload className="w-4 h-4 mr-2" />
-                  导入 Excel
+                  {t('resources.import_excel')}
                 </Button>
                 <input
                   type="file"
@@ -362,37 +364,37 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
                   onChange={(e) => e.target.files?.[0] && handleExcelImport('subjects', e.target.files[0])}
                 />
                 <Dialog open={showSubjectDialog} onOpenChange={setShowSubjectDialog}>
-                  <DialogTrigger asChild>
+                    <DialogTrigger asChild>
                     <Button size="sm" className="bg-primary hover:bg-purple-700">
                       <Plus className="w-4 h-4 mr-2" />
-                      添加科目
+                      {t('resources.add_subject')}
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>{editingSubject ? '编辑科目' : '添加新科目'}</DialogTitle>
+                      <DialogTitle>{editingSubject ? t('resources.edit_subject') : t('resources.add_subject_new')}</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4 py-4">
                       <div>
-                        <Label>科目名称</Label>
+                        <Label>{t('resources.label_subject_name')}</Label>
                         <Input
-                          placeholder="如：数学"
+                          placeholder={t('resources.placeholder_subject_example')}
                           value={newSubject.name}
                           onChange={(e) => setNewSubject({ ...newSubject, name: e.target.value })}
                           className="mt-2"
                         />
                       </div>
                       <div>
-                        <Label>简称</Label>
+                        <Label>{t('resources.label_short_name')}</Label>
                         <Input
-                          placeholder="如：MAT"
+                          placeholder={t('resources.placeholder_short_example')}
                           value={newSubject.shortName}
                           onChange={(e) => setNewSubject({ ...newSubject, shortName: e.target.value })}
                           className="mt-2"
                         />
                       </div>
                       <div>
-                        <Label>颜色</Label>
+                        <Label>{t('resources.label_color')}</Label>
                         <Input
                           type="color"
                           value={newSubject.color}
@@ -406,7 +408,7 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
                           checked={newSubject.requiresLab}
                           onCheckedChange={(checked) => setNewSubject({ ...newSubject, requiresLab: !!checked })}
                         />
-                        <Label htmlFor="requiresLab" className="cursor-pointer">需要实验班</Label>
+                        <Label htmlFor="requiresLab" className="cursor-pointer">{t('resources.requires_lab')}</Label>
                       </div>
                     </div>
                     <div className="flex gap-2 justify-end">
@@ -414,12 +416,12 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
                         setShowSubjectDialog(false)
                         setEditingSubject(null)
                         setNewSubject({ name: '', shortName: '', color: '#8B5CF6', requiresLab: false })
-                      }}>取消</Button>
+                      }}>{t('common.cancel')}</Button>
                       <Button 
                         onClick={editingSubject ? updateSubject : addSubject} 
                         className="bg-primary hover:bg-purple-700"
                       >
-                        {editingSubject ? '保存' : '添加'}
+                        {editingSubject ? t('common.save') : t('common.add')}
                       </Button>
                     </div>
                   </DialogContent>
@@ -464,12 +466,12 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
                   </div>
                   {subject.requiresLab && (
                     <Badge variant="secondary" className="bg-blue-50 text-blue-700 border-blue-200">
-                      需要实验班
+                      {t('resources.requires_lab')}
                     </Badge>
                   )}
                 </Card>
               )) : (
-                <p className="text-gray-600">没有科目，点击添加科目按钮添加</p>
+                <p className="text-gray-600">{t('resources.no_subjects')}</p>
               )}
             </div>
           </Card>

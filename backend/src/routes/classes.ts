@@ -101,9 +101,39 @@ router.put("/:id/form-teacher", async (req: Request<{ id: string }>, res: Respon
 // DELETE /api/classes/:id - Delete class
 router.delete("/:id", async (req: Request<{ id: string }>, res: Response) => {
   try {
-    await pb.collection("classes").delete(req.params.id);
+    const classId = req.params.id;
+    
+    // First delete related timetable entries
+    try {
+      const timetableEntries = await pb.collection("timetable_entries").getFullList({
+        filter: `class_id = "${classId}"`,
+        requestKey: null
+      });
+      for (const entry of timetableEntries) {
+        await pb.collection("timetable_entries").delete(entry.id, { requestKey: null });
+      }
+    } catch {
+      // Collection might not exist, ignore
+    }
+    
+    // Delete related assignments
+    try {
+      const assignments = await pb.collection("assignments").getFullList({
+        filter: `class = "${classId}"`,
+        requestKey: null
+      });
+      for (const assignment of assignments) {
+        await pb.collection("assignments").delete(assignment.id, { requestKey: null });
+      }
+    } catch {
+      // Ignore errors
+    }
+    
+    // Now delete the class
+    await pb.collection("classes").delete(classId);
     res.status(204).send();
   } catch (error) {
+    console.error("Failed to delete class:", error);
     res.status(400).json({ error: "Failed to delete class" });
   }
 });

@@ -1,0 +1,33 @@
+{
+  "num_classes": 12,
+  "num_teachers": 16,
+  "num_subjects": 4,
+  "num_rooms": 1,
+  "num_periods_per_day": 6,
+  "num_days": 5,
+  
+  "class_subject_periods": [
+    [6, 6, 6, 6], [6, 6, 6, 6], [6, 6, 6, 6], [6, 6, 6, 6],
+    [6, 6, 6, 6], [6, 6, 6, 6], [6, 6, 6, 6], [6, 6, 6, 6],
+    [6, 6, 6, 6], [6, 6, 6, 6], [6, 6, 6, 6], [6, 6, 6, 6]
+  ],
+  
+  "teacher_for_class_subject": [
+    [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4],
+    [5, 6, 7, 8], [5, 6, 7, 8], [5, 6, 7, 8],
+    [9, 10, 11, 12], [9, 10, 11, 12], [9, 10, 11, 12],
+    [13, 14, 15, 16], [13, 14, 15, 16], [13, 14, 15, 16]
+  ],
+  
+  "teacher_unavailable": [],
+  "subject_needs_lab": [false, false, false, false],
+  "subject_is_hard": [false, false, false, false],
+  "subject_is_pe": [false, false, false, false],
+  "room_is_lab": [false],
+  "slot_is_break": [[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false]],
+  
+  "MAX_TEACHER_CONSECUTIVE": 3,
+  "FLAG_NO_CONSECUTIVE_SAME_SUBJECT": true,
+  "FLAG_DOUBLE_PERIOD_NO_RECESS": false,
+  "timeout_seconds": 60
+}

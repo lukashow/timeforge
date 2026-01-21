@@ -1,6 +1,5 @@
 % ============================================================
-% TIMETABLE SCHEDULING MODEL - SIMPLIFIED
-% Only the 4 rules requested by user
+% TIMETABLE SCHEDULING MODEL - MINIMAL FOR TESTING
 % ============================================================
 
 include "globals.mzn";
@@ -17,7 +16,6 @@ int: num_days;
 set of int: CLASSES = 1..num_classes;
 set of int: TEACHERS = 1..num_teachers;
 set of int: SUBJECTS = 1..num_subjects;
-set of int: ROOMS = 1..num_rooms;
 set of int: PERIODS = 1..num_periods_per_day;
 set of int: DAYS = 1..num_days;
 
@@ -59,7 +57,7 @@ array[CLASSES, DAYS, PERIODS] of var SUBJECTS_OR_NONE: timetable;
 function var TEACHERS_OR_NONE: get_teacher(CLASSES: c, var SUBJECTS_OR_NONE: s) =
   if s = 0 then 0 else teacher_for_class_subject[c, s] endif;
 
-% ============ HARD CONSTRAINTS ============
+% ============ CONSTRAINTS ============
 
 % 1. Period count - each class gets required periods per subject
 constraint forall(c in CLASSES, s in SUBJECTS)(
@@ -71,39 +69,17 @@ constraint forall(d in DAYS, p in PERIODS, t in TEACHERS)(
   sum(c in CLASSES)(bool2int(get_teacher(c, timetable[c, d, p]) = t)) <= 1
 );
 
-% ============ USER RULE 1: 同一科目不在同一天连续出现 ============
+% 3. No consecutive same subject (Rule 1)
 constraint if FLAG_NO_CONSECUTIVE_SAME_SUBJECT then
   forall(c in CLASSES, d in DAYS, p in 1..num_periods_per_day-1)(
-    let { 
-      var SUBJECTS_OR_NONE: s1 = timetable[c, d, p];
-      var SUBJECTS_OR_NONE: s2 = timetable[c, d, p+1] 
-    } in
-    if s1 > 0 /\ s2 > 0 then s1 != s2 else true endif
+    timetable[c, d, p] = 0 \/ timetable[c, d, p+1] = 0 \/ timetable[c, d, p] != timetable[c, d, p+1]
   )
 else true endif;
 
-% ============ USER RULE 2: 避免教师连续授课3个班级以上 ============
-constraint forall(t in TEACHERS, d in DAYS, p in 1..num_periods_per_day-MAX_TEACHER_CONSECUTIVE)(
-  sum(i in 0..MAX_TEACHER_CONSECUTIVE)(
-    bool2int(exists(c in CLASSES)(get_teacher(c, timetable[c, d, p+i]) = t))
-  ) <= MAX_TEACHER_CONSECUTIVE
-);
-
-% ============ USER RULE 3: 双节不可跨过课间时间 ============
-constraint if FLAG_DOUBLE_PERIOD_NO_RECESS then
-  forall(c in CLASSES, d in DAYS, p in 1..num_periods_per_day-1)(
-    let {
-      var SUBJECTS_OR_NONE: s1 = timetable[c, d, p];
-      var SUBJECTS_OR_NONE: s2 = timetable[c, d, p+1]
-    } in
-    if slot_is_break[d, p+1] /\ s1 > 0 /\ s2 > 0 then s1 != s2 else true endif
-  )
-else true endif;
-
-% ============ SOLVE (NO OPTIMIZzATION FOR SPEED) ============
+% ============ SOLVE ============
 
 solve 
-  :: int_search([timetable[c,d,p] | c in CLASSES, d in DAYS, p in PERIODS], first_fail, indomain_random)
+  :: int_search([timetable[c,d,p] | c in CLASSES, d in DAYS, p in PERIODS], input_order, indomain_min)
   satisfy;
 
 % ============ OUTPUT ============

@@ -1,0 +1,74 @@
+{
+  "num_classes": 12,
+  "num_teachers": 12,
+  "num_subjects": 4,
+  "num_rooms": 1,
+  "num_periods_per_day": 6,
+  "num_days": 5,
+  
+  "class_subject_periods": [
+    [8, 8, 7, 7],
+    [8, 8, 7, 7],
+    [8, 8, 7, 7],
+    [8, 8, 7, 7],
+    [8, 8, 7, 7],
+    [8, 8, 7, 7],
+    [8, 8, 7, 7],
+    [8, 8, 7, 7],
+    [8, 8, 7, 7],
+    [8, 8, 7, 7],
+    [8, 8, 7, 7],
+    [8, 8, 7, 7]
+  ],
+  
+  "teacher_for_class_subject": [
+    [1, 2, 3, 4],
+    [1, 2, 3, 4],
+    [1, 2, 3, 4],
+    [5, 6, 7, 8],
+    [5, 6, 7, 8],
+    [5, 6, 7, 8],
+    [9, 10, 11, 12],
+    [9, 10, 11, 12],
+    [9, 10, 11, 12],
+    [1, 6, 11, 4],
+    [5, 2, 7, 12],
+    [9, 10, 3, 8]
+  ],
+  
+  "teacher_unavailable": [
+    [[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false]],
+    [[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false]],
+    [[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false]],
+    [[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false]],
+    [[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false]],
+    [[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false]],
+    [[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false]],
+    [[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false]],
+    [[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false]],
+    [[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false]],
+    [[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false]],
+    [[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false],[false,false,false,false,false,false]]
+  ],
+  
+  "subject_needs_lab": [false, false, false, false],
+  "subject_is_hard": [true, true, false, false],
+  "subject_is_pe": [false, false, false, false],
+  
+  "room_is_lab": [false],
+  
+  "slot_is_after_recess": [[false,false,true,false,false,false],[false,false,true,false,false,false],[false,false,true,false,false,false],[false,false,true,false,false,false],[false,false,true,false,false,false]],
+  "slot_is_after_lunch": [[false,false,false,true,false,false],[false,false,false,true,false,false],[false,false,false,true,false,false],[false,false,false,true,false,false],[false,false,false,true,false,false]],
+  "slot_is_morning": [[true,true,true,false,false,false],[true,true,true,false,false,false],[true,true,true,false,false,false],[true,true,true,false,false,false],[true,true,true,false,false,false]],
+  "slot_is_break": [[false,false,false,true,false,false],[false,false,false,true,false,false],[false,false,false,true,false,false],[false,false,false,true,false,false],[false,false,false,true,false,false]],
+  
+  "MAX_TEACHER_CONSECUTIVE": 3,
+  "FLAG_TEACHER_DAILY_BALANCE": true,
+  "FLAG_PE_AFTER_RECESS": false,
+  "FLAG_NO_CONSECUTIVE_SAME_SUBJECT": true,
+  "FLAG_NO_HARD_AFTER_LUNCH": false,
+  "FLAG_HARD_IN_MORNING": false,
+  "FLAG_LAB_NEEDS_LAB_ROOM": false,
+  "FLAG_DOUBLE_PERIOD_NO_RECESS": true,
+  "FLAG_MINIMIZE_TEACHER_GAPS": false
+}
