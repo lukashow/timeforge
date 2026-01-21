@@ -9,10 +9,12 @@ import { Checkbox } from '@/components/ui/checkbox'
 import type { Break } from '@/types/time-grid'
 import type { StepProps } from '@/types/common'
 import { timeGrid as timeGridApi } from '@/lib/api'
+import { useTranslation } from 'react-i18next'
 
-const WEEKDAY_NAMES = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+
 
 export function TimeGridSetup({ onNext }: StepProps) {
+  const { t } = useTranslation()
   // Loading states
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -91,13 +93,7 @@ export function TimeGridSetup({ onNext }: StepProps) {
   }
 
   // Update selected days when workDays changes
-  const handleWorkDaysChange = (days: number) => {
-    setWorkDays(days)
-    // Auto-select first N days if current selection doesn't match
-    if (selectedDays.length !== days) {
-      setSelectedDays(Array.from({ length: days }, (_, i) => i))
-    }
-  }
+
 
   const toggleDay = (dayIndex: number) => {
     if (selectedDays.includes(dayIndex)) {
@@ -163,8 +159,8 @@ export function TimeGridSetup({ onNext }: StepProps) {
     <div className="p-8">
       {/* Page Title */}
       <div className="mb-8">
-        <h1 className="text-3xl font-semibold text-gray-900 mb-2">第一步：规划学校时间</h1>
-        <p className="text-gray-600">定义全校课表的时间框架，这将作为所有班级排课的基础画布</p>
+        <h1 className="text-3xl font-semibold text-gray-900 mb-2">{t('time_grid.step_title')}</h1>
+        <p className="text-gray-600">{t('time_grid.step_desc')}</p>
       </div>
 
       {error && (
@@ -177,13 +173,13 @@ export function TimeGridSetup({ onNext }: StepProps) {
         {/* Left Side - Parameters */}
         <div className="lg:col-span-1 space-y-6">
           <Card className="p-6 bg-white border border-gray-200 shadow-sm">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">基础参数</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">{t('time_grid.basic_params')}</h3>
             
             <div className="space-y-6">
               {/* Work Days & Periods in same row */}
               <div>
                 <div>
-                  <Label htmlFor="periodsPerDay" className="text-gray-700 mb-2 block">每日最大课节数</Label>
+                  <Label htmlFor="periodsPerDay" className="text-gray-700 mb-2 block">{t('time_grid.periods_per_day')}</Label>
                   <Input
                     id="periodsPerDay"
                     type="number"
@@ -198,9 +194,9 @@ export function TimeGridSetup({ onNext }: StepProps) {
 
               {/* Day Selection */}
               <div>
-                <Label className="text-gray-700 mb-3 block">选择上课日</Label>
+                <Label className="text-gray-700 mb-3 block">{t('time_grid.select_days')}</Label>
                 <div className="grid grid-cols-4 gap-2">
-                  {WEEKDAY_NAMES.map((day, index) => (
+                  {['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'].map((dayKey, index) => (
                     <div
                       key={index}
                       className={`flex items-center gap-2 p-2 rounded-lg border cursor-pointer transition-colors ${
@@ -214,7 +210,7 @@ export function TimeGridSetup({ onNext }: StepProps) {
                         checked={selectedDays.includes(index)}
                         onCheckedChange={() => toggleDay(index)}
                       />
-                      <span className="text-sm">{day}</span>
+                      <span className="text-sm">{t(`weekdays.${dayKey}`)}</span>
                     </div>
                   ))}
                 </div>
@@ -225,7 +221,7 @@ export function TimeGridSetup({ onNext }: StepProps) {
                 <div>
                   <Label className="text-gray-700 mb-2 block flex items-center gap-2">
                     <Calendar className="w-4 h-4" />
-                    开学日期
+                    {t('time_grid.start_date')}
                   </Label>
                   <Input
                     type="date"
@@ -237,7 +233,7 @@ export function TimeGridSetup({ onNext }: StepProps) {
                 <div>
                   <Label className="text-gray-700 mb-2 block flex items-center gap-2">
                     <Clock className="w-4 h-4" />
-                    第一节开始
+                    {t('time_grid.start_time')}
                   </Label>
                   <Input
                     type="time"
@@ -250,7 +246,7 @@ export function TimeGridSetup({ onNext }: StepProps) {
 
               {/* Minutes Per Period */}
               <div>
-                <Label className="text-gray-700 mb-2 block">每节课时长（分钟）</Label>
+                <Label className="text-gray-700 mb-2 block">{t('time_grid.period_duration')}</Label>
                 <Input
                   type="number"
                   min="20"
@@ -266,7 +262,7 @@ export function TimeGridSetup({ onNext }: StepProps) {
           {/* Break Definition Card */}
           <Card className="p-6 bg-white border border-gray-200 shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">时间块定义</h3>
+              <h3 className="text-lg font-semibold text-gray-900">{t('time_grid.break_definitions')}</h3>
               <Button
                 size="sm"
                 variant="outline"
@@ -274,7 +270,7 @@ export function TimeGridSetup({ onNext }: StepProps) {
                 className="text-primary border-primary hover:bg-purple-50"
               >
                 <Plus className="w-4 h-4 mr-1" />
-                添加
+                {t('common.add')}
               </Button>
             </div>
 
@@ -291,7 +287,7 @@ export function TimeGridSetup({ onNext }: StepProps) {
                     <div className="text-sm">
                       <div className="font-medium text-gray-900">{breakItem.name}</div>
                       <div className="text-xs text-gray-600">
-                        第{breakItem.afterPeriod}节后 · {breakItem.duration}分钟
+                      {t('time_grid.break_summary', { afterPeriod: breakItem.afterPeriod, duration: breakItem.duration })}
                       </div>
                     </div>
                   </div>
@@ -311,14 +307,14 @@ export function TimeGridSetup({ onNext }: StepProps) {
             {showBreakForm && (
               <Card className="p-4 bg-gray-50 border border-gray-200">
                 <div className="space-y-3 ">
-                  <Label className="text-gray-700 mb-2 block">名称</Label>
+                  <Label className="text-gray-700 mb-2 block">{t('common.name')}</Label>
                   <Input
-                    placeholder="名称（如：大课间、午餐）"
+                    placeholder={t('common.name')}
                     value={newBreak.name}
                     onChange={(e) => setNewBreak({ ...newBreak, name: e.target.value })}
                     className="bg-white"
                   />
-                  <Label className="text-gray-700 mb-2 block">时长（分钟）</Label>
+                  <Label className="text-gray-700 mb-2 block">{t('common.duration')}</Label>
                   <div className="grid">
                     <Input
                       type="number"
@@ -330,11 +326,11 @@ export function TimeGridSetup({ onNext }: StepProps) {
                       className="bg-white"
                     />
 					</div>
-					<Label className="text-gray-700 mb-2 block">第几节后</Label>
+					<Label className="text-gray-700 mb-2 block">{t('time_grid.after_period')}</Label>
 					<div className="grid">
                     <Input
                       type="number"
-                      placeholder="第几节后"
+                      placeholder={t('time_grid.after_period')}
                       min="1"
                       max={periodsPerDay}
                       value={newBreak.afterPeriod}
@@ -349,15 +345,15 @@ export function TimeGridSetup({ onNext }: StepProps) {
                       onCheckedChange={(checked) => setNewBreak({ ...newBreak, isHard: checked })}
                     />
                     <Label htmlFor="isHard" className="text-sm cursor-pointer">
-                      硬性断点
+                      {t('time_grid.is_hard_break')}
                     </Label>
                   </div>
                   <div className="flex gap-2">
                     <Button size="sm" variant="ghost" onClick={() => setShowBreakForm(false)} className="flex-1">
-                      取消
+                      {t('common.cancel')}
                     </Button>
                     <Button size="sm" onClick={addBreak} className="flex-1 bg-primary hover:bg-purple-700">
-                      添加
+                      {t('common.add')}
                     </Button>
                   </div>
                 </div>
@@ -366,7 +362,7 @@ export function TimeGridSetup({ onNext }: StepProps) {
 
             <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
               <p className="text-sm text-blue-900">
-                已检测到 <strong>{breaks.filter(b => b.isHard).length}</strong> 个硬性断点
+                {t('time_grid.detected_hard_breaks', { count: breaks.filter(b => b.isHard).length })}
               </p>
             </div>
           </Card>
@@ -375,7 +371,7 @@ export function TimeGridSetup({ onNext }: StepProps) {
         {/* Right Side - 2D Grid Preview */}
         <div className="lg:col-span-2">
           <Card className="p-6 bg-white border border-gray-200 shadow-sm">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">交互式预览时间表</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">{t('time_grid.preview_title')}</h3>
             
             <div className="overflow-x-auto">
               <div className="inline-block min-w-full">
@@ -384,7 +380,7 @@ export function TimeGridSetup({ onNext }: StepProps) {
                   <div className="w-24 flex-shrink-0"></div>
                   {selectedDays.map((dayIndex) => (
                     <div key={dayIndex} className="flex-1 min-w-[100px] text-center font-semibold text-gray-700 py-2">
-                      {WEEKDAY_NAMES[dayIndex]}
+                      {t(`weekdays.${['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'][dayIndex]}`)}
                     </div>
                   ))}
                 </div>
@@ -401,7 +397,7 @@ export function TimeGridSetup({ onNext }: StepProps) {
                         {/* Period Row */}
                         <div className="flex gap-1">
                           <div className="w-24 flex-shrink-0 flex flex-col items-center justify-center bg-gray-100 rounded text-sm font-medium text-gray-700 py-1">
-                            <span>第{period}节</span>
+                            <span>{t('time_grid.period_label', { period })}</span>
                             <span className="text-xs text-gray-500">{start}-{end}</span>
                           </div>
                           {selectedDays.map((dayIndex) => (
@@ -437,7 +433,7 @@ export function TimeGridSetup({ onNext }: StepProps) {
                                   {breakAfter.name}
                                 </div>
                                 <div className="text-xs text-gray-600 text-center">
-                                  {breakAfter.duration}分钟
+                                  {breakAfter.duration}{t('time_grid.unit_minutes')}
                                 </div>
                               </div>
                             ))}
@@ -452,23 +448,23 @@ export function TimeGridSetup({ onNext }: StepProps) {
 
             {/* Summary */}
             <div className="mt-6 p-4 bg-purple-50 rounded-lg border border-purple-200">
-              <h4 className="font-medium text-gray-900 mb-2">时间框架总结</h4>
+              <h4 className="font-medium text-gray-900 mb-2">{t('time_grid.summary_title')}</h4>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
                 <div>
-                  <span className="text-gray-600">工作日：</span>
-                  <span className="ml-2 font-medium text-gray-900">{workDays} 天/周</span>
+                  <span className="text-gray-600">{t('time_grid.summary_workdays')}</span>
+                  <span className="ml-2 font-medium text-gray-900">{workDays} {t('time_grid.unit_days_per_week')}</span>
                 </div>
                 <div>
-                  <span className="text-gray-600">每日课节：</span>
-                  <span className="ml-2 font-medium text-gray-900">{periodsPerDay} 节</span>
+                  <span className="text-gray-600">{t('time_grid.summary_periods')}</span>
+                  <span className="ml-2 font-medium text-gray-900">{periodsPerDay} {t('time_grid.unit_periods')}</span>
                 </div>
                 <div>
-                  <span className="text-gray-600">总课时：</span>
-                  <span className="ml-2 font-medium text-gray-900">{workDays * periodsPerDay} 节/周</span>
+                  <span className="text-gray-600">{t('time_grid.summary_total')}</span>
+                  <span className="ml-2 font-medium text-gray-900">{workDays * periodsPerDay} {t('time_grid.unit_periods_per_week')}</span>
                 </div>
                 <div>
-                  <span className="text-gray-600">课时长度：</span>
-                  <span className="ml-2 font-medium text-gray-900">{minutesPerPeriod} 分钟</span>
+                  <span className="text-gray-600">{t('time_grid.summary_duration')}</span>
+                  <span className="ml-2 font-medium text-gray-900">{minutesPerPeriod} {t('time_grid.unit_minutes')}</span>
                 </div>
               </div>
             </div>
@@ -479,7 +475,7 @@ export function TimeGridSetup({ onNext }: StepProps) {
       {/* Bottom Navigation */}
       <div className="mt-8 flex justify-between items-center">
         <Button variant="outline" disabled className="text-gray-400">
-          上一步
+          {t('common.prev')}
         </Button>
         <Button 
           className="bg-primary hover:bg-purple-700" 
@@ -489,10 +485,10 @@ export function TimeGridSetup({ onNext }: StepProps) {
           {saving ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              保存中...
+              {t('common.saving')}
             </>
           ) : (
-            '保存并前往下一步'
+            t('common.save_next')
           )}
         </Button>
       </div>

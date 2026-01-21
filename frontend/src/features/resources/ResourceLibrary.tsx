@@ -231,10 +231,6 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
     }
   }
 
-  const bulkUpdateLoad = (load: number) => {
-    selectedTeachers.forEach(id => updateTeacherLoad(id, load))
-    setSelectedTeachers([])
-  }
 
   const toggleTeacherSelection = (id: string) => {
     setSelectedTeachers(prev =>
@@ -245,10 +241,6 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
   const getSubjectById = (id: string) => subjects.find(s => s.id === id)
   
   // For teachers with expanded subject, get from expand
-  const getTeacherSubject = (teacher: Teacher) => {
-    if (teacher.expand?.subject) return teacher.expand.subject
-    return subjects.find(s => s.id === teacher.subject)
-  }
 
   const filteredTeachers = teachers.filter(t => {
     const matchesName = t.name.toLowerCase().includes(teacherFilter.toLowerCase())
@@ -313,7 +305,7 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
             </div>
             {importResult?.errors && importResult.errors.length > 0 && (
               <div className="space-y-2">
-                <p className="text-sm text-red-600 font-medium">错误信息:</p>
+                <p className="text-sm text-red-600 font-medium">{t('common.error_message')}</p>
                 <div className="max-h-40 overflow-y-auto bg-red-50 p-3 rounded">
                   {importResult.errors.map((err, i) => (
                     <p key={i} className="text-sm text-red-600">{err}</p>
@@ -346,7 +338,7 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
         <TabsContent value="subjects" className="space-y-6">
           <Card className="p-6 bg-white border border-gray-200">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">科目列表</h3>
+              <h3 className="text-lg font-semibold text-gray-900">{t('resources.subject_list')}</h3>
               <div className="flex gap-2">
                 <Button size="sm" variant="outline" className="text-primary border-primary hover:bg-purple-50" onClick={() => downloadTemplate('subjects')}>
                   <Download className="w-4 h-4 mr-2" />
@@ -480,23 +472,23 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
           <Dialog open={!!deleteConfirmSubject} onOpenChange={(open) => !open && setDeleteConfirmSubject(null)}>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>确认删除科目</DialogTitle>
+                <DialogTitle>{t('resources.confirm_delete_subject')}</DialogTitle>
               </DialogHeader>
               <div className="py-4">
                 <p className="text-gray-600">
-                  确定要删除科目 "<strong>{deleteConfirmSubject?.name}</strong>" 吗？
+                  {t('resources.delete_subject_msg', { name: deleteConfirmSubject?.name })}
                 </p>
                 <p className="text-sm text-red-600 mt-2">
-                  删除后，与该科目相关的教师分配数据也将被删除，此操作无法撤销。
+                  {t('resources.delete_subject_warning')}
                 </p>
               </div>
               <div className="flex gap-2 justify-end">
-                <Button variant="outline" onClick={() => setDeleteConfirmSubject(null)}>取消</Button>
+                <Button variant="outline" onClick={() => setDeleteConfirmSubject(null)}>{t('common.cancel')}</Button>
                 <Button 
                   variant="destructive" 
                   onClick={() => deleteConfirmSubject && deleteSubject(deleteConfirmSubject)}
                 >
-                  确认删除
+                  {t('common.confirm_delete')}
                 </Button>
               </div>
             </DialogContent>
@@ -533,11 +525,11 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
               <div className="flex items-center gap-2">
                 <Button size="sm" variant="outline" className="text-primary border-primary hover:bg-purple-50" onClick={() => downloadTemplate('teachers')}>
                   <Download className="w-4 h-4 mr-2" />
-                  下载模板
+                  {t('resources.download_template')}
                 </Button>
                 <Button size="sm" variant="outline" className="text-primary border-primary hover:bg-purple-50" onClick={() => teachersFileInputRef.current?.click()}>
                   <Upload className="w-4 h-4 mr-2" />
-                  导入 Excel
+                  {t('resources.import_excel')}
                 </Button>
                 <input
                   type="file"
@@ -550,28 +542,28 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
                   <DialogTrigger asChild>
                     <Button size="sm" className="bg-primary hover:bg-purple-700">
                       <Plus className="w-4 h-4 mr-2" />
-                      添加老师
+                      {t('resources.add_teacher')}
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>添加新老师</DialogTitle>
+                      <DialogTitle>{t('resources.add_new_teacher')}</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4 py-4">
                       <div>
-                        <Label>姓名</Label>
+                        <Label>{t('resources.name')}</Label>
                         <Input
-                          placeholder="如：张老师"
+                          placeholder={t('resources.teacher_placeholder')}
                           value={newTeacher.name}
                           onChange={(e) => setNewTeacher({ ...newTeacher, name: e.target.value })}
                           className="mt-2"
                         />
                       </div>
                       <div>
-                        <Label>科目</Label>
+                        <Label>{t('resources.subject')}</Label>
                         <Select value={newTeacher.subject} onValueChange={(value) => setNewTeacher({ ...newTeacher, subject: value })}>
                           <SelectTrigger className="mt-2">
-                            <SelectValue placeholder="选择科目" />
+                            <SelectValue placeholder={t('common.select_subject')} />
                           </SelectTrigger>
                           <SelectContent>
                             {subjects.map(s => (
@@ -581,7 +573,7 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
                         </Select>
                       </div>
                       <div>
-                        <Label>周负荷（节）</Label>
+                        <Label>{t('resources.weekly_load')}</Label>
                         <Input
                           type="number"
                           min="10"
@@ -593,8 +585,8 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
                       </div>
                     </div>
                     <div className="flex gap-2 justify-end">
-                      <Button variant="outline" onClick={() => setShowTeacherDialog(false)}>取消</Button>
-                      <Button onClick={addTeacher} className="bg-primary hover:bg-purple-700">添加</Button>
+                      <Button variant="outline" onClick={() => setShowTeacherDialog(false)}>{t('common.cancel')}</Button>
+                      <Button onClick={addTeacher} className="bg-primary hover:bg-purple-700">{t('common.add')}</Button>
                     </div>
                   </DialogContent>
                 </Dialog>
@@ -618,11 +610,11 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
                       }}
                     />
                   </TableHead>
-                  <TableHead>姓名</TableHead>
-                  <TableHead>科目</TableHead>
-                  <TableHead>周负荷（节）</TableHead>
-                  <TableHead>不可用时间</TableHead>
-                  <TableHead className="text-right">操作</TableHead>
+                  <TableHead>{t('resources.name')}</TableHead>
+                  <TableHead>{t('resources.subject')}</TableHead>
+                  <TableHead>{t('resources.weekly_load')}</TableHead>
+                  <TableHead>{t('resources.unavailable_time')}</TableHead>
+                  <TableHead className="text-right">{t('common.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -663,7 +655,7 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
                             setShowUnavailableDialog(true)
                           }}
                         >
-                          {teacher.unavailable.length > 0 ? `${teacher.unavailable.length} 时段` : '设置'}
+                          {teacher.unavailable.length > 0 ? t('resources.count_slots', { count: teacher.unavailable.length }) : t('common.setup')}
                         </Button>
                       </TableCell>
                       <TableCell className="text-right">
@@ -687,13 +679,13 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
           <Dialog open={showUnavailableDialog} onOpenChange={setShowUnavailableDialog}>
             <DialogContent className="max-w-2xl">
               <DialogHeader>
-                <DialogTitle>设置不可用时间 - {selectedTeacher?.name}</DialogTitle>
+                <DialogTitle>{t('resources.setup_unavailable', { name: selectedTeacher?.name })}</DialogTitle>
               </DialogHeader>
               <div className="py-4">
-                <p className="text-sm text-gray-600 mb-4">点击时间格标记为不可用（红色），再次点击取消标记</p>
+                <p className="text-sm text-gray-600 mb-4">{t('resources.unavailable_hint')}</p>
                 <div className="border border-gray-200 rounded-lg overflow-hidden">
                   <div className="flex bg-gray-50 border-b border-gray-200">
-                    <div className="w-20 p-2 text-center text-sm font-medium text-gray-700">节次</div>
+                    <div className="w-20 p-2 text-center text-sm font-medium text-gray-700">{t('resources.period_index')}</div>
                     {WEEKDAYS.slice(0, 5).map((day) => (
                       <div key={day} className="flex-1 p-2 text-center text-sm font-medium text-gray-700 border-l border-gray-200">
                         {day}
@@ -702,7 +694,7 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
                   </div>
                   {PERIODS.map((period) => (
                     <div key={period} className="flex border-b border-gray-200 last:border-b-0">
-                      <div className="w-20 p-2 text-center text-sm text-gray-600 bg-gray-50">第{period}节</div>
+                      <div className="w-20 p-2 text-center text-sm text-gray-600 bg-gray-50">{t('time_grid.period_label', { period })}</div>
                       {WEEKDAYS.slice(0, 5).map((_, dayIndex) => {
                         const isUnavailable = selectedTeacher?.unavailable?.some(
                           (slot: number[]) => slot[0] === dayIndex && slot[1] === period
@@ -741,7 +733,7 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
                 </div>
               </div>
               <div className="flex gap-2 justify-end">
-                <Button variant="outline" onClick={() => setShowUnavailableDialog(false)}>取消</Button>
+                <Button variant="outline" onClick={() => setShowUnavailableDialog(false)}>{t('common.cancel')}</Button>
                 <Button 
                   className="bg-primary hover:bg-purple-700"
                   onClick={async () => {
@@ -762,7 +754,7 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
                     }
                   }}
                 >
-                  保存
+                  {t('common.save')}
                 </Button>
               </div>
             </DialogContent>
@@ -773,15 +765,15 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
         <TabsContent value="rooms" className="space-y-6">
           <Card className="p-6 bg-white border border-gray-200">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">批量生成教室</h3>
+              <h3 className="text-lg font-semibold text-gray-900">{t('resources.bulk_create_rooms')}</h3>
               <div className="flex gap-2">
                 <Button size="sm" variant="outline" className="text-primary border-primary hover:bg-purple-50" onClick={() => downloadTemplate('rooms')}>
                   <Download className="w-4 h-4 mr-2" />
-                  下载模板
+                  {t('resources.download_template')}
                 </Button>
                 <Button size="sm" variant="outline" className="text-primary border-primary hover:bg-purple-50" onClick={() => roomsFileInputRef.current?.click()}>
                   <Upload className="w-4 h-4 mr-2" />
-                  导入 Excel
+                  {t('resources.import_excel')}
                 </Button>
                 <input
                   type="file"
@@ -795,16 +787,16 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
             
             <div className="grid grid-cols-3 gap-3 mb-4">
               <div>
-                <Label className="text-sm text-gray-700 mb-2 block">前缀</Label>
+                <Label className="text-sm text-gray-700 mb-2 block">{t('resources.prefix')}</Label>
                 <Input
-                  placeholder="如：教室、Lab-"
+                  placeholder={t('resources.prefix_placeholder')}
                   value={bulkPrefix}
                   onChange={(e) => setBulkPrefix(e.target.value)}
                   className="bg-[#F9FAFB]"
                 />
               </div>
               <div>
-                <Label className="text-sm text-gray-700 mb-2 block">从编号</Label>
+                <Label className="text-sm text-gray-700 mb-2 block">{t('resources.start_num')}</Label>
                 <Input
                   type="number"
                   min="1"
@@ -814,7 +806,7 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
                 />
               </div>
               <div>
-                <Label className="text-sm text-gray-700 mb-2 block">到编号</Label>
+                <Label className="text-sm text-gray-700 mb-2 block">{t('resources.end_num')}</Label>
                 <Input
                   type="number"
                   min="1"
@@ -827,12 +819,12 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
 
             <Button onClick={bulkCreateRooms} className="bg-primary hover:bg-purple-700 w-full">
               <Plus className="w-4 h-4 mr-2" />
-              生成 {bulkEnd - bulkStart + 1} 个教室
+              {t('resources.generate_rooms', { count: bulkEnd - bulkStart + 1 })}
             </Button>
           </Card>
 
           <Card className="p-6 bg-white border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">教室列表</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('resources.room_list')}</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
               {rooms.map((room) => (
@@ -860,10 +852,10 @@ export function ResourceLibrary({ onNext, onBack }: StepProps) {
       {/* Bottom Navigation */}
       <div className="mt-8 flex justify-between items-center">
         <Button variant="outline" onClick={onBack}>
-          上一步
+          {t('common.prev')}
         </Button>
         <Button className="bg-primary hover:bg-purple-700" onClick={onNext}>
-          确认无误，下一步
+          {t('common.confirm_next')}
         </Button>
       </div>
     </div>

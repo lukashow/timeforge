@@ -26,7 +26,7 @@ export function GenerationTower({ onNext, onBack }: StepProps) {
   const [estimatedTime, setEstimatedTime] = useState<number | null>(null)
   const [elapsedTime, setElapsedTime] = useState(0)
   const [problemSize, setProblemSize] = useState<GenerationEstimate['problemSize'] | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [, setError] = useState<string | null>(null)
 
   const toggleRule = (ruleId: string) => {
     setRules(rules.map(rule =>

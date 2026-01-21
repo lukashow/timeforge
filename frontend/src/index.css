@@ -1,38 +1,46 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: oklch(1 0 0);
-  --color-foreground: oklch(0.21 0.034 264.665);
+  --color-background: #F8F9FD;
+  --color-foreground: #2B2F3E;
   
-  --color-card: oklch(1 0 0);
-  --color-card-foreground: oklch(0.21 0.034 264.665);
+  --color-card: #FFFFFF;
+  --color-card-foreground: #2B2F3E;
   
-  --color-popover: oklch(1 0 0);
-  --color-popover-foreground: oklch(0.21 0.034 264.665);
+  --color-popover: #FFFFFF;
+  --color-popover-foreground: #2B2F3E;
   
-  --color-primary: oklch(0.558 0.288 302.321);
-  --color-primary-foreground: oklch(1 0 0);
+  --color-primary: #8A56AC;
+  --color-primary-foreground: #FFFFFF;
   
-  --color-secondary: oklch(0.967 0.003 264.542);
-  --color-secondary-foreground: oklch(0.21 0.034 264.665);
+  --color-secondary: #2B2F3E;
+  --color-secondary-foreground: #FFFFFF;
   
-  --color-muted: oklch(0.967 0.003 264.542);
-  --color-muted-foreground: oklch(0.446 0.03 256.802);
+  --color-muted: #F5F6FA;
+  --color-muted-foreground: #9A9EA6;
   
-  --color-accent: oklch(0.967 0.003 264.542);
-  --color-accent-foreground: oklch(0.21 0.034 264.665);
+  --color-accent: #7341E8;
+  --color-accent-foreground: #FFFFFF;
   
-  --color-destructive: oklch(0.577 0.245 27.325);
-  --color-destructive-foreground: oklch(1 0 0);
+  --color-destructive: #FF6B6B;
+  --color-destructive-foreground: #FFFFFF;
+
+  --color-success: #66E070;
+  --color-warning: #FFB55D;
+  --color-info: #6C88FA;
   
-  --color-border: oklch(0.928 0.006 264.531);
-  --color-input: oklch(0.928 0.006 264.531);
-  --color-ring: oklch(0.558 0.288 302.321);
+  --color-border: #F5F6FA;
+  --color-input: #F5F6FA;
+  --color-ring: #8A56AC;
   
-  --radius-sm: 0.25rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
+  --radius-sm: 0.5rem;   /* 8px */
+  --radius-md: 0.75rem;  /* 12px */
+  --radius-lg: 1.25rem;  /* 20px */
+  --radius-xl: 1.5rem;   /* 24px */
+
+  --font-sans: 'Nunito', 'Noto Sans SC', sans-serif;
+  
+  --shadow-card: 0px 10px 40px rgba(29, 22, 23, 0.07);
 }
 
 @layer base {
@@ -43,5 +51,12 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: var(--font-sans);
+    font-weight: 500;
+  }
+
+  /* Custom overrides for smooth shadows */
+  .shadow-soft {
+    box-shadow: var(--shadow-card);
   }
 }

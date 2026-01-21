@@ -1,7 +1,9 @@
 export interface OptimizationRule {
   id: string
-  label: string
-  description: string
+  label?: string
+  labelKey?: string
+  description?: string
+  descriptionKey?: string
   enabled: boolean
   type: 'preset' | 'custom'
   condition?: string

@@ -156,9 +156,6 @@ export function ClassFactory({ onNext, onBack }: StepProps) {
     return teachers.find(t => t.id === id)
   }
 
-  const getDisciplineById = (id: string) => {
-    return disciplines.find(d => d.id === id) || classes.find(c => c.discipline === id)?.expand?.discipline
-  }
 
   const unassignedCount = classes.filter(c => !c.formTeacher).length
   const assignedCount = classes.length - unassignedCount
@@ -385,13 +382,13 @@ export function ClassFactory({ onNext, onBack }: StepProps) {
                               <DialogTitle>{t('class.select_form_teacher_title', { name: cls.name })}</DialogTitle>
                             </DialogHeader>
                             <div className="py-4 space-y-2 max-h-[400px] overflow-y-auto">
-                              {teachers.map((t) => {
-                                const isAssigned = classes.some(c => c.formTeacher === t.id && c.id !== cls.id)
-                                const loadPercentage = (t.weeklyLoad / 25) * 100
+                              {teachers.map((teacher) => {
+                                const isAssigned = classes.some(c => c.formTeacher === teacher.id && c.id !== cls.id)
+                                const loadPercentage = (teacher.weeklyLoad / 25) * 100
                                 return (
                                   <button
-                                    key={t.id}
-                                    onClick={() => !isAssigned && assignTeacher(cls.id, t.id)}
+                                    key={teacher.id}
+                                    onClick={() => !isAssigned && assignTeacher(cls.id, teacher.id)}
                                     disabled={isAssigned}
                                     className={`w-full flex items-center justify-between p-3 rounded-lg border transition-colors ${
                                       isAssigned
@@ -401,11 +398,11 @@ export function ClassFactory({ onNext, onBack }: StepProps) {
                                   >
                                     <div className="flex items-center gap-3">
                                       <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-medium">
-                                        {t.name[0]}
+                                        {teacher.name[0]}
                                       </div>
                                       <div className="text-left">
-                                        <div className="font-medium text-gray-900">{t.name}</div>
-                                        <div className="text-sm text-gray-600">{t.expand?.subject?.name || t('class.unknown_subject')}</div>
+                                        <div className="font-medium text-gray-900">{teacher.name}</div>
+                                        <div className="text-sm text-gray-600">{teacher.expand?.subject?.name || t('class.unknown_subject')}</div>
                                       </div>
                                     </div>
                                     <div className="flex items-center gap-2">

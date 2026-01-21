@@ -137,14 +137,14 @@ export function TimetableExport({ onBack }: StepProps) {
 
   const handleExportExcel = (type: 'all' | 'class' | 'teacher') => {
     const wb = XLSX.utils.book_new()
-    const dayHeaders = ['节次', ...WEEKDAYS.slice(0, 5)]
+    const dayHeaders = [t('resources.period_index'), ...WEEKDAYS.slice(0, 5).map(day => t(`weekdays.${['mon', 'tue', 'wed', 'thu', 'fri'][WEEKDAYS.indexOf(day)]}`))] // Map to weekday keys
     
     if (type === 'all') {
       // Export all classes overview
       classes.forEach(cls => {
         const data: string[][] = [dayHeaders]
         for (let p = 1; p <= maxPeriods; p++) {
-          const row = [`第${p}节`]
+          const row = [t('time_grid.period_label', { period: p })]
           for (let d = 1; d <= 5; d++) {
             const entry = getClassCell(cls.id, d, p)
             if (entry?.static_name) {
@@ -163,11 +163,11 @@ export function TimetableExport({ onBack }: StepProps) {
         ws['!cols'] = [{ wch: 10 }, { wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 20 }]
         XLSX.utils.book_append_sheet(wb, ws, cls.name.slice(0, 31))
       })
-      XLSX.writeFile(wb, '全校课表.xlsx')
+      XLSX.writeFile(wb, `${t('export.all_timetable_name')}.xlsx`)
     } else if (type === 'class' && selectedClassId) {
       const data: string[][] = [dayHeaders]
       for (let p = 1; p <= maxPeriods; p++) {
-        const row = [`第${p}节`]
+        const row = [t('time_grid.period_label', { period: p })]
         for (let d = 1; d <= 5; d++) {
           const entry = getClassCell(selectedClassId, d, p)
           if (entry?.static_name) {
@@ -184,12 +184,12 @@ export function TimetableExport({ onBack }: StepProps) {
       }
       const ws = XLSX.utils.aoa_to_sheet(data)
       ws['!cols'] = [{ wch: 10 }, { wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 20 }]
-      XLSX.utils.book_append_sheet(wb, ws, '班级课表')
-      XLSX.writeFile(wb, `${classNameMap[selectedClassId] || '班级'}_课表.xlsx`)
+      XLSX.utils.book_append_sheet(wb, ws, t('export.class_timetable'))
+      XLSX.writeFile(wb, `${classNameMap[selectedClassId] || t('common.class')}${t('export.filename_suffix')}.xlsx`)
     } else if (type === 'teacher' && selectedTeacherId) {
       const data: string[][] = [dayHeaders]
       for (let p = 1; p <= maxPeriods; p++) {
-        const row = [`第${p}节`]
+        const row = [t('time_grid.period_label', { period: p })]
         for (let d = 1; d <= 5; d++) {
           const entry = getTeacherCell(selectedTeacherId, d, p)
           if (entry?.subject_id && entry?.class_id) {
@@ -204,8 +204,8 @@ export function TimetableExport({ onBack }: StepProps) {
       }
       const ws = XLSX.utils.aoa_to_sheet(data)
       ws['!cols'] = [{ wch: 10 }, { wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 20 }]
-      XLSX.utils.book_append_sheet(wb, ws, '教师课表')
-      XLSX.writeFile(wb, `${teacherNameMap[selectedTeacherId] || '教师'}_课表.xlsx`)
+      XLSX.utils.book_append_sheet(wb, ws, t('export.teacher_timetable'))
+      XLSX.writeFile(wb, `${teacherNameMap[selectedTeacherId] || t('common.teacher')}${t('export.filename_suffix')}.xlsx`)
     }
   }
 
@@ -239,8 +239,8 @@ export function TimetableExport({ onBack }: StepProps) {
     }
     
     const title = type === 'class' 
-      ? (classNameMap[selectedClassId] || '班级')
-      : (teacherNameMap[selectedTeacherId] || '教师')
+      ? (classNameMap[selectedClassId] || t('common.class'))
+      : (teacherNameMap[selectedTeacherId] || t('common.teacher'))
     
     // Build entries data for this view
     const pdfEntries = type === 'class' 
@@ -291,8 +291,8 @@ export function TimetableExport({ onBack }: StepProps) {
             <thead>
               <tr>
                 <th style="background: #F5F5F5; padding: 12px 8px; font-weight: 500; color: #666666; border-bottom: 2px solid #E5E5E5; width: 70px;"></th>
-                ${['星期一', '星期二', '星期三', '星期四', '星期五'].map(day => 
-                  `<th style="background: #F5F5F5; padding: 12px 8px; font-weight: 500; color: #555555; border-bottom: 2px solid #E5E5E5; text-align: center; font-size: 15px;">${day}</th>`
+                ${['mon', 'tue', 'wed', 'thu', 'fri'].map(day => 
+                  `<th style="background: #F5F5F5; padding: 12px 8px; font-weight: 500; color: #555555; border-bottom: 2px solid #E5E5E5; text-align: center; font-size: 15px;">${t(`weekdays.${day}`)}</th>`
                 ).join('')}
               </tr>
             </thead>
@@ -305,7 +305,7 @@ export function TimetableExport({ onBack }: StepProps) {
         html += `
           <tr>
             <td colspan="6" style="background: #555555; color: #ffffff; text-align: center; padding: 8px; font-size: 13px; font-weight: 500;">
-              下课 (${breakBefore.duration}分钟)
+              ${t('export.break')} (${t('export.break_duration', { duration: breakBefore.duration })})
             </td>
           </tr>
         `
@@ -378,7 +378,7 @@ export function TimetableExport({ onBack }: StepProps) {
             <div style="width: 14px; height: 14px; border-radius: 50%; background: ${hexColor}; margin-top: 3px; flex-shrink: 0;"></div>
             <div>
               <div style="font-weight: 600; color: #444444; font-size: 13px;">${name}</div>
-              <div style="color: #999999; font-size: 11px;">${data.count}节 | ${data.teacher}</div>
+              <div style="color: #999999; font-size: 11px;">${data.count}${t('time_grid.unit_periods')} | ${data.teacher}</div>
             </div>
           </div>
         `
@@ -420,7 +420,7 @@ export function TimetableExport({ onBack }: StepProps) {
       const y = 10
       
       pdf.addImage(imgData, 'PNG', x, y, imgWidth * ratio / 2, imgHeight * ratio / 2)
-      pdf.save(`${title}_课表.pdf`)
+      pdf.save(`${title}${t('export.filename_suffix')}.pdf`)
     } finally {
       document.body.removeChild(iframe)
     }
@@ -498,7 +498,7 @@ export function TimetableExport({ onBack }: StepProps) {
         <TabsContent value="overview">
           <Card className="p-6 bg-white border border-gray-200 mb-6">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">全校课表总览</h3>
+              <h3 className="text-lg font-semibold text-gray-900">{t('export.all_timetable_name')}</h3>
               <div className="flex gap-2">
                 <Button
                   size="sm"
@@ -516,10 +516,10 @@ export function TimetableExport({ onBack }: StepProps) {
               <table className="w-full border-collapse text-sm">
                 <thead>
                   <tr>
-                    <th className="p-2 text-left font-medium text-gray-700 bg-gray-50 border border-gray-200">班级</th>
-                    {WEEKDAYS.slice(0, 5).map((day) => (
+                    <th className="p-2 text-left font-medium text-gray-700 bg-gray-50 border border-gray-200">{t('common.class')}</th>
+                    {WEEKDAYS.slice(0, 5).map((day, index) => (
                       <th key={day} className="p-2 text-center font-medium text-gray-700 bg-gray-50 border border-gray-200">
-                        {day}
+                        {t(`weekdays.${['mon', 'tue', 'wed', 'thu', 'fri'][index]}`)}
                       </th>
                     ))}
                   </tr>
@@ -544,7 +544,7 @@ export function TimetableExport({ onBack }: StepProps) {
                                   key={periodIndex}
                                   className="w-5 h-5 rounded text-[10px] flex items-center justify-center text-white font-medium"
                                   style={{ backgroundColor: color }}
-                                  title={displayName ? `${displayName} - 第${periodIndex + 1}节${isStatic ? ' (固定)' : ''}` : `空闲 - 第${periodIndex + 1}节`}
+                                  title={displayName ? `${displayName} - ${t('time_grid.period_label', { period: periodIndex + 1 })}${isStatic ? ` (${t('export.static_course')})` : ''}` : `${t('export.free')} - ${t('time_grid.period_label', { period: periodIndex + 1 })}`}
                                 >
                                   {displayName ? displayName[0] : ''}
                                 </div>
@@ -579,7 +579,7 @@ export function TimetableExport({ onBack }: StepProps) {
           <Card className="p-6 bg-white border border-gray-200 mb-6">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-4">
-                <h3 className="text-lg font-semibold text-gray-900">班级课表</h3>
+                <h3 className="text-lg font-semibold text-gray-900">{t('export.class_timetable')}</h3>
                 <Select value={selectedClassId} onValueChange={setSelectedClassId}>
                   <SelectTrigger className="w-40">
                     <SelectValue />
@@ -636,7 +636,7 @@ export function TimetableExport({ onBack }: StepProps) {
                       <Fragment key={periodIndex}>
                         <tr>
                           <td className="p-3 text-center font-medium text-gray-600 bg-gray-50 border border-gray-200">
-                            第{periodNum}节
+                            {t('time_grid.period_label', { period: periodNum })}
                           </td>
                           {WEEKDAYS.slice(0, 5).map((_, dayIndex) => {
                             const dayNum = dayIndex + 1
@@ -655,7 +655,7 @@ export function TimetableExport({ onBack }: StepProps) {
                                     <div className="font-medium" style={{ color: staticCourse.color }}>
                                       {staticCourse.name}
                                     </div>
-                                    <div className="text-xs text-gray-500 mt-1">固定课程</div>
+                                    <div className="text-xs text-gray-500 mt-1">{t('export.static_course')}</div>
                                   </div>
                                 </td>
                               )
@@ -674,7 +674,7 @@ export function TimetableExport({ onBack }: StepProps) {
                                     <div className="font-medium" style={{ color: '#374151' }}>
                                       {entry.static_name}
                                     </div>
-                                    <div className="text-xs text-gray-500 mt-1">固定课程</div>
+                                    <div className="text-xs text-gray-500 mt-1">{t('export.static_course')}</div>
                                   </div>
                                 </td>
                               )
@@ -698,7 +698,7 @@ export function TimetableExport({ onBack }: StepProps) {
                                   </div>
                                 ) : (
                                   <div className="p-3 rounded-lg text-center bg-gray-50 text-gray-400">
-                                    空闲
+                                    {t('export.free')}
                                   </div>
                                 )}
                               </td>
@@ -709,7 +709,7 @@ export function TimetableExport({ onBack }: StepProps) {
                         {breakAfter && (
                           <tr key={`break-${periodIndex}`} className="bg-amber-50">
                             <td colSpan={6} className="p-2 text-center text-amber-700 font-medium border border-amber-200">
-                              ☕ {breakAfter.name} ({breakAfter.duration}分钟)
+                              ☕ {breakAfter.name} ({t('export.break_duration', { duration: breakAfter.duration })})
                             </td>
                           </tr>
                         )}
@@ -727,7 +727,7 @@ export function TimetableExport({ onBack }: StepProps) {
           <Card className="p-6 bg-white border border-gray-200 mb-6">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-4">
-                <h3 className="text-lg font-semibold text-gray-900">教师课表</h3>
+                <h3 className="text-lg font-semibold text-gray-900">{t('export.teacher_timetable')}</h3>
                 <Select value={selectedTeacherId} onValueChange={setSelectedTeacherId}>
                   <SelectTrigger className="w-40">
                     <SelectValue />
@@ -779,7 +779,7 @@ export function TimetableExport({ onBack }: StepProps) {
                   {Array.from({ length: maxPeriods }, (_, periodIndex) => (
                     <tr key={periodIndex}>
                       <td className="p-3 text-center font-medium text-gray-600 bg-gray-50 border border-gray-200">
-                        第{periodIndex + 1}节
+                        {t('time_grid.period_label', { period: periodIndex + 1 })}
                       </td>
                       {WEEKDAYS.slice(0, 5).map((_, dayIndex) => {
                         const entry = getTeacherCell(selectedTeacherId, dayIndex + 1, periodIndex + 1)
@@ -799,7 +799,7 @@ export function TimetableExport({ onBack }: StepProps) {
                               </div>
                             ) : (
                               <div className="p-3 rounded-lg text-center bg-gray-50 text-gray-400">
-                                空闲
+                                {t('export.free')}
                               </div>
                             )}
                           </td>

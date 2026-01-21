@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
 import { useTranslation } from 'react-i18next'
-import type { SubjectAllocation, StaticCourse, Discipline } from '@/types/curriculum'
+import type { SubjectAllocation, Discipline } from '@/types/curriculum'
 import type { StepProps } from '@/types/common'
 import { WEEKDAYS } from '@/constants/weekdays'
 import { subjects as subjectsApi, disciplines as disciplinesApi } from '@/lib/api'
