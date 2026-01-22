@@ -16,6 +16,15 @@
     "transport": "交通",
     "hostel": "宿舍"
   },
+  "progressbar": {
+		"step_school_scheduling": "规划学校时间",
+		"step_teaching_resources": "校园资源",
+		"step_discipline_setup": "学科组设置",
+		"step_classes_setup": "班级设置",
+		"step_teacher_assignment": "教师分配",
+		"step_timetable_generation": "生成课表",
+		"step_view_export_timetable": "查看&导出课表"
+	},
   "search": {
     "placeholder": "你想找什么？"
   },

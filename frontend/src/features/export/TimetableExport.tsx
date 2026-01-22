@@ -649,7 +649,7 @@ export function TimetableExport({ onBack }: StepProps) {
                               return (
                                 <td key={dayIndex} className="p-2 border border-gray-200">
                                   <div
-                                    className="p-3 rounded-lg text-center transition-all"
+                                    className="p-3 rounded-sm text-center transition-all"
                                     style={{ backgroundColor: staticCourse.color + '30', borderLeft: `3px solid ${staticCourse.color}` }}
                                   >
                                     <div className="font-medium" style={{ color: staticCourse.color }}>
@@ -668,7 +668,7 @@ export function TimetableExport({ onBack }: StepProps) {
                               return (
                                 <td key={dayIndex} className="p-2 border border-gray-200">
                                   <div
-                                    className="p-3 rounded-lg text-center transition-all"
+                                    className="p-3 rounded-sm text-center transition-all"
                                     style={{ backgroundColor: '#37415120', borderLeft: '3px solid #374151' }}
                                   >
                                     <div className="font-medium" style={{ color: '#374151' }}>
@@ -688,7 +688,7 @@ export function TimetableExport({ onBack }: StepProps) {
                               <td key={dayIndex} className="p-2 border border-gray-200">
                                 {subjectName ? (
                                   <div
-                                    className="p-3 rounded-lg text-center transition-all hover:scale-105"
+                                    className="p-3 rounded-sm text-center transition-all hover:scale-105"
                                     style={{ backgroundColor: color + '20', borderLeft: `3px solid ${color}` }}
                                   >
                                     <div className="font-medium text-gray-900" style={{ color }}>
@@ -697,7 +697,7 @@ export function TimetableExport({ onBack }: StepProps) {
                                     <div className="text-xs text-gray-600 mt-1">{teacherName || ''}</div>
                                   </div>
                                 ) : (
-                                  <div className="p-3 rounded-lg text-center bg-gray-50 text-gray-400">
+                                  <div className="p-3 rounded-sm text-center bg-gray-50 text-gray-400">
                                     {t('export.free')}
                                   </div>
                                 )}
@@ -709,7 +709,7 @@ export function TimetableExport({ onBack }: StepProps) {
                         {breakAfter && (
                           <tr key={`break-${periodIndex}`} className="bg-amber-50">
                             <td colSpan={6} className="p-2 text-center text-amber-700 font-medium border border-amber-200">
-                              ☕ {breakAfter.name} ({t('export.break_duration', { duration: breakAfter.duration })})
+                              ☕ {breakAfter.name} {t('export.break_duration', { duration: breakAfter.duration })}
                             </td>
                           </tr>
                         )}
@@ -791,14 +791,14 @@ export function TimetableExport({ onBack }: StepProps) {
                           <td key={dayIndex} className="p-2 border border-gray-200">
                             {className ? (
                               <div
-                                className="p-3 rounded-lg text-center transition-all hover:scale-105"
+                                className="p-3 rounded-sm text-center transition-all hover:scale-105"
                                 style={{ backgroundColor: color + '20', borderLeft: `3px solid ${color}` }}
                               >
                                 <div className="font-medium text-gray-900">{className}</div>
                                 <div className="text-xs mt-1" style={{ color }}>{subjectName}</div>
                               </div>
                             ) : (
-                              <div className="p-3 rounded-lg text-center bg-gray-50 text-gray-400">
+                              <div className="p-3 rounded-sm text-center bg-gray-50 text-gray-400">
                                 {t('export.free')}
                               </div>
                             )}

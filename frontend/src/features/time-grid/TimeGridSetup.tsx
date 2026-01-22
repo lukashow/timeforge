@@ -359,12 +359,6 @@ export function TimeGridSetup({ onNext }: StepProps) {
                 </div>
               </Card>
             )}
-
-            <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-              <p className="text-sm text-blue-900">
-                {t('time_grid.detected_hard_breaks', { count: breaks.filter(b => b.isHard).length })}
-              </p>
-            </div>
           </Card>
         </div>
 

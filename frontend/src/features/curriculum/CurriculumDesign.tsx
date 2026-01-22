@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next'
 import type { SubjectAllocation, Discipline } from '@/types/curriculum'
 import type { StepProps } from '@/types/common'
 import { WEEKDAYS } from '@/constants/weekdays'
-import { subjects as subjectsApi, disciplines as disciplinesApi } from '@/lib/api'
+import { subjects as subjectsApi, disciplines as disciplinesApi, timeGrid as timeGridApi } from '@/lib/api'
 import type { Subject, Discipline as ApiDiscipline } from '@/lib/api'
 
 export function CurriculumDesign({ onNext, onBack }: StepProps) {
@@ -34,7 +34,7 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
   const [deleteConfirmDiscipline, setDeleteConfirmDiscipline] = useState<Discipline | null>(null)
   const [editDiscipline, setEditDiscipline] = useState<Discipline | null>(null)
 
-  const maxPeriodsPerWeek = 40
+  const [maxPeriodsPerWeek, setMaxPeriodsPerWeek] = useState<number>(40)
 
   // Load data from API on mount
   useEffect(() => {
@@ -58,6 +58,16 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
         setDisciplines(transformedDisciplines)
         if (transformedDisciplines.length > 0) {
           setSelectedDiscipline(transformedDisciplines[0].id)
+        }
+        // Fetch time grid configuration to compute max periods per week
+        try {
+          const grid: any = await timeGridApi.get()
+          const periodsPerDay = grid?.periodsPerDay ?? (Array.isArray(grid?.periods) ? grid.periods.length : undefined) ?? 8
+          const workDays = grid?.workDays ?? (Array.isArray(grid?.selectedDays) ? grid.selectedDays.length : undefined) ?? 5
+          setMaxPeriodsPerWeek(periodsPerDay * workDays)
+        } catch (err) {
+          // Keep default
+          console.warn('Failed to load time grid, using default max periods per week', err)
         }
       } catch (err) {
         setError(t('curriculum.error_load'))

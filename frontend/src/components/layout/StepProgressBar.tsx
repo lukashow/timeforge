@@ -1,22 +1,23 @@
 import { Icon } from '@iconify/react'
 import type { WizardStep } from '@/types/common'
+import { useTranslation } from 'react-i18next'
 
 interface StepProgressBarProps {
   currentStep: number
   onStepClick?: (step: number) => void
 }
 
-const steps: WizardStep[] = [
-  { number: 1, title: '规划学校时间' },
-  { number: 2, title: '录入教学资源' },
-  { number: 3, title: '设定学科组' },
-  { number: 4, title: '创建班级' },
-  { number: 5, title: '教师任课分配' },
-  { number: 6, title: '生成课表' },
-  { number: 7, title: '查看及导出课表' },
-]
-
 export function StepProgressBar({ currentStep, onStepClick }: StepProgressBarProps) {
+	const { t } = useTranslation()
+	const steps: WizardStep[] = [
+		{ number: 1, title: t('progressbar.step_school_scheduling') },
+		{ number: 2, title: t('progressbar.step_teaching_resources') },
+		{ number: 3, title: t('progressbar.step_discipline_setup') },
+		{ number: 4, title: t('progressbar.step_classes_setup') },
+		{ number: 5, title: t('progressbar.step_teacher_assignment') },
+		{ number: 6, title: t('progressbar.step_timetable_generation') },
+		{ number: 7, title: t('progressbar.step_view_export_timetable') },
+	]
   return (
     <div className="bg-white/50 backdrop-blur-sm px-8 py-6 mb-8 rounded-[20px] shadow-sm mx-8 mt-6 border border-white">
       <div className="max-w-6xl mx-auto">

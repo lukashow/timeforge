@@ -16,6 +16,15 @@
     "transport": "Transport",
     "hostel": "Hostel"
   },
+  "progressbar": {
+		"step_school_scheduling": "Set Up Schedule",
+		"step_teaching_resources": "Campus Resources",
+		"step_discipline_setup": "Disciplines",
+		"step_classes_setup": "Classes",
+		"step_teacher_assignment": "Assign Teachers",
+		"step_timetable_generation": "Generate Timetable",
+		"step_view_export_timetable": "View & Export"
+	},
   "search": {
     "placeholder": "What are you looking for?"
   },
@@ -25,8 +34,7 @@
   "lang": {
     "en": "English",
     "zh": "中文"
-  }
-  ,
+  },
   "common": {
     "prev": "Previous",
     "next": "Next",
@@ -91,11 +99,11 @@
     "resources": {
       "error_load": "Failed to load resources",
       "loading": "Loading resources...",
-      "step_title_2": "Step 2: Enter Teaching Resources",
+      "step_title_2": "Step 2: Campus Resources",
       "step_desc_2": "Create subjects first, then add teachers and rooms",
       "type_subjects": "Subjects",
       "type_teachers": "Teachers",
-      "type_rooms": "Rooms",
+      "type_rooms": "Classrooms",
       "import_result": "Import Result",
       "import_success": "Imported {{count}} items successfully",
       "download_template": "Download template",
@@ -123,20 +131,20 @@
       "setup_unavailable": "Setup Unavailable - {{name}}",
       "unavailable_hint": "Click to mark as unavailable (red), click again to unmark",
       "period_index": "Period",
-      "bulk_create_rooms": "Bulk Create Rooms",
+      "bulk_create_rooms": "Bulk Create Classrooms",
       "prefix": "Prefix",
       "prefix_placeholder": "e.g. Room, Lab-",
       "start_num": "Start Number",
       "end_num": "End Number",
       "search_teacher": "Search teacher name...",
       "all_subjects": "All Subjects",
-      "confirm_delete_room": "Confirm Delete Room",
-      "delete_room_msg": "Are you sure you want to delete room \"{{name}}\"?",
-      "room_list": "Room List",
-      "no_rooms": "No rooms",
+      "confirm_delete_room": "Confirm Delete Classroom",
+      "delete_room_msg": "Are you sure you want to delete classroom \"{{name}}\"?",
+      "room_list": "Classroom List",
+      "no_rooms": "No classrooms",
     "teacher_placeholder": "e.g. Mr. Zhang",
     "add_teacher": "Add Teacher",
-    "generate_rooms": "Generate {{count}} Rooms"
+    "generate_rooms": "Generate {{count}} Classrooms"
   },
   "export": {
     "error_load": "Failed to load timetable data",
@@ -195,14 +203,14 @@
     "start_date": "Start Date",
     "start_time": "First Period Starts",
     "period_duration": "Period Duration (mins)",
-    "break_definitions": "Break Definitions",
+    "break_definitions": "Break Times",
     "break_summary": "After Period {{afterPeriod}} · {{duration}} mins",
     "after_period": "After Period",
     "is_hard_break": "Hard Break",
     "detected_hard_breaks": "Detected {{count}} hard breaks",
-    "preview_title": "Interactive Timetable Preview",
+    "preview_title": "Preview",
     "period_label": "Period {{period}}",
-    "summary_title": "Time Framework Summary",
+    "summary_title": "Structure Summary",
     "summary_workdays": "Work Days:",
     "summary_periods": "Periods/Day:",
     "summary_total": "Total periods:",
