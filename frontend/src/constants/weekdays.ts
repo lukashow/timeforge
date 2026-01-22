@@ -1,4 +1,4 @@
-export const WEEKDAYS = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'] as const
+export const WEEKDAYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as const
 
 export const WEEKDAYS_EN = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const
 

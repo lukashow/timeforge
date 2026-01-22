@@ -29,13 +29,6 @@ const menuSections: MenuSection[] = [
     ],
   },
   {
-    titleKey: 'menu.section_time',
-    items: [
-      { icon: 'tabler:clock', labelKey: 'menu.time_grid', path: '/time-grid' },
-      { icon: 'tabler:calendar-event', labelKey: 'menu.schedules', path: '/schedules' },
-    ],
-  },
-  {
     titleKey: 'menu.section_resources',
     items: [
       { icon: 'tabler:book', labelKey: 'menu.subjects', path: '/subjects' },
@@ -53,6 +46,7 @@ const menuSections: MenuSection[] = [
   {
     titleKey: 'menu.section_scheduling',
     items: [
+      { icon: 'tabler:clock', labelKey: 'menu.timetable_structure', path: '/timetable-structure' },
       { icon: 'tabler:cpu', labelKey: 'menu.generation', path: '/generation' },
       { icon: 'tabler:table', labelKey: 'menu.timetables', path: '/timetables' },
       { icon: 'tabler:download', labelKey: 'menu.export', path: '/export' },

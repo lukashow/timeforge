@@ -78,7 +78,7 @@ export function TimeGridSetup({ onNext }: StepProps) {
       return true
     } catch (err) {
       console.error('Failed to save time grid:', err)
-      setError('Failed to save. Please try again.')
+      setError(t('time_grid.save_error'))
       return false
     } finally {
       setSaving(false)
@@ -149,7 +149,7 @@ export function TimeGridSetup({ onNext }: StepProps) {
       <div className="p-8 flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-gray-600">Loading time grid configuration...</p>
+          <p className="text-gray-600">{t('time_grid.loading')}</p>
         </div>
       </div>
     )
@@ -318,7 +318,7 @@ export function TimeGridSetup({ onNext }: StepProps) {
                   <div className="grid">
                     <Input
                       type="number"
-                      placeholder="时长"
+                      placeholder={t('common.duration')}
                       min="5"
                       max="120"
                       value={newBreak.duration}

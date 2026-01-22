@@ -9,8 +9,7 @@ import { TeachersPage } from '@/pages/TeachersPage'
 import { ClassroomsPage } from '@/pages/ClassroomsPage'
 import { DisciplinesPage } from '@/pages/DisciplinesPage'
 import { AssignmentsPage } from '@/pages/AssignmentsPage'
-import { TimeGridPage } from '@/pages/TimeGridPage'
-import { SchedulesPage } from '@/pages/SchedulesPage'
+import { TimetableStructurePage } from '@/pages/TimetableStructurePage'
 import { GenerationPage } from '@/pages/GenerationPage'
 import { TimetablesPage } from '@/pages/TimetablesPage'
 import { ExportPage } from '@/pages/ExportPage'
@@ -28,14 +27,6 @@ export const router = createBrowserRouter([
       {
         path: 'wizard',
         element: <WizardPage />,
-      },
-      {
-        path: 'time-grid',
-        element: <TimeGridPage />,
-      },
-      {
-        path: 'schedules',
-        element: <SchedulesPage />,
       },
       {
         path: 'subjects',
@@ -56,6 +47,10 @@ export const router = createBrowserRouter([
       {
         path: 'assignments',
         element: <AssignmentsPage />,
+      },
+      {
+        path: 'timetable-structure',
+        element: <TimetableStructurePage />,
       },
       {
         path: 'generation',
@@ -80,3 +75,4 @@ export const router = createBrowserRouter([
     ],
   },
 ])
+

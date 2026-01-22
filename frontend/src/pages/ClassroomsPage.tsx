@@ -76,7 +76,7 @@ export function ClassroomsPage() {
       })
     } catch (err) {
       console.error('Import failed:', err)
-      setImportResult({ show: true, success: 0, errors: ['文件解析失败'] })
+      setImportResult({ show: true, success: 0, errors: [t('resources.error_parse_file')] })
     }
   }
 
@@ -224,7 +224,7 @@ export function ClassroomsPage() {
               <Building2 className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-foreground">{prefix}{t('pages.building_suffix', '号楼')}</h3>
+              <h3 className="text-lg font-semibold text-foreground">{t('pages.building_name', { name: prefix })}</h3>
               <p className="text-sm text-muted-foreground">{buildingRooms.length} {t('pages.rooms_count', '间教室')}</p>
             </div>
           </div>

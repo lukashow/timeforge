@@ -63,8 +63,8 @@ router.get("/latest", async (_req: Request, res: Response) => {
         requestKey: null
       });
 
-      if (latestEntry.items.length > 0) {
-        generationId = latestEntry.items[0].generation_id as string;
+      if (latestEntry.items.length > 0 && latestEntry.items[0]) {
+        generationId = (latestEntry.items[0].generation_id as string) || null;
         
         // Fetch all entries for this generation
         const allEntries = await pb.collection("timetable_entries").getFullList({
@@ -143,28 +143,179 @@ router.get("/latest", async (_req: Request, res: Response) => {
 });
 
 // POST /api/timetable/generate - Start timetable generation
+// This forwards to the generation router's logic
 router.post("/generate", async (req: Request, res: Response) => {
   try {
-    const { rules } = req.body;
+    // Import the generation logic dynamically
+    const { runSolver } = await import("@/or-tools/runner.ts");
+    const { DEFAULT_FLAGS } = await import("@/types/timetable.ts");
+    
+    // Collect data from PocketBase
+    const [classes, teachers, subjects, rooms, assignments, disciplines, timeGrid] = await Promise.all([
+      pb.collection("classes").getFullList({ requestKey: null }),
+      pb.collection("teachers").getFullList({ requestKey: null }),
+      pb.collection("subjects").getFullList({ requestKey: null }),
+      pb.collection("rooms").getFullList({ requestKey: null }),
+      pb.collection("assignments").getFullList({ requestKey: null }),
+      pb.collection("disciplines").getFullList({ requestKey: null }),
+      pb.collection("time_grid").getFullList({ requestKey: null }),
+    ]);
+
+    // Get time grid config
+    const gridConfig = timeGrid[0] as { periodsPerDay?: number; workDays?: number; periods?: unknown[]; breaks?: unknown[] } || {};
+    const numPeriodsPerDay = gridConfig.periodsPerDay || 8;
+    const numDays = typeof gridConfig.workDays === 'number' ? gridConfig.workDays : 5;
+
+    // Build class-subject periods matrix
+    const classSubjectPeriods = classes.map(cls => {
+      const discipline = disciplines.find(d => d.id === (cls as { discipline?: string }).discipline);
+      const allocations = (discipline as { subjectAllocations?: { subjectId: string; totalPeriods: number }[] })?.subjectAllocations || [];
+      return subjects.map(subj => {
+        const alloc = allocations.find(a => a.subjectId === subj.id);
+        return alloc?.totalPeriods || 0;
+      });
+    });
+
+    // Build teacher-for-class-subject matrix
+    const teacherForClassSubject = classes.map(cls => {
+      return subjects.map(subj => {
+        const assignment = assignments.find(a => 
+          (a as { class?: string }).class === cls.id && 
+          (a as { subject?: string }).subject === subj.id
+        );
+        const teacherId = (assignment as { teacher?: string })?.teacher;
+        const teacherIdx = teachers.findIndex(t => t.id === teacherId);
+        return teacherIdx >= 0 ? teacherIdx + 1 : 0;
+      });
+    });
+
+    // Build static courses
+    type StaticCourse = { id: string; name: string; day: number; period: number; color: string };
+    const staticCourses: { class_index: number; day: number; period: number; name: string }[] = [];
+    classes.forEach((cls, classIdx) => {
+      const discipline = disciplines.find(d => d.id === (cls as { discipline?: string }).discipline);
+      const courses = (discipline as { staticCourses?: StaticCourse[] })?.staticCourses || [];
+      courses.forEach(course => {
+        staticCourses.push({
+          class_index: classIdx,
+          day: course.day,
+          period: course.period - 1,
+          name: course.name
+        });
+      });
+    });
+
+    // Build slot_is_break
+    const slotIsBreak = Array(numDays).fill(null).map(() => 
+      Array(numPeriodsPerDay).fill(false)
+    );
+
+    // Run solver
+    const solverInput = {
+      num_classes: classes.length,
+      num_teachers: teachers.length,
+      num_subjects: subjects.length,
+      num_rooms: rooms.length,
+      num_periods_per_day: numPeriodsPerDay,
+      num_days: numDays,
+      class_subject_periods: classSubjectPeriods,
+      teacher_for_class_subject: teacherForClassSubject,
+      slot_is_break: slotIsBreak,
+      static_courses: staticCourses,
+      MAX_TEACHER_CONSECUTIVE: DEFAULT_FLAGS.MAX_TEACHER_CONSECUTIVE_PERIODS,
+      FLAG_NO_CONSECUTIVE_SAME_SUBJECT: DEFAULT_FLAGS.NO_CONSECUTIVE_SAME_SUBJECT,
+      FLAG_DOUBLE_PERIOD_NO_RECESS: DEFAULT_FLAGS.DOUBLE_PERIOD_NO_RECESS,
+      FLAG_MINIMIZE_TEACHER_GAPS: DEFAULT_FLAGS.MINIMIZE_TEACHER_GAPS,
+      timeout_seconds: 300,
+    };
+
+    const solverResult = await runSolver(solverInput);
+    const generationId = `gen_${Date.now()}`;
+
+    // Save to PocketBase if successful
+    if (solverResult.success && solverResult.timetable.length > 0) {
+      const batchSize = 100;
+      for (let i = 0; i < solverResult.timetable.length; i += batchSize) {
+        const batch = solverResult.timetable.slice(i, i + batchSize);
+        await Promise.all(batch.map(async (entry) => {
+          if (entry.subject === 0) return;
+          const classId = classes[entry.class - 1]?.id;
+          const subjectId = entry.subject > 0 ? subjects[entry.subject - 1]?.id : null;
+          const teacherId = entry.teacher > 0 ? teachers[entry.teacher - 1]?.id : null;
+          if (classId) {
+            await pb.collection("timetable_entries").create({
+              generation_id: generationId,
+              class_id: classId,
+              subject_id: subjectId,
+              teacher_id: teacherId,
+              day: entry.day,
+              period: entry.period,
+              is_free: false,
+            }, { requestKey: null });
+          }
+        }));
+      }
+      // Save static courses
+      for (const sc of staticCourses) {
+        const classId = classes[sc.class_index]?.id;
+        if (classId) {
+          await pb.collection("timetable_entries").create({
+            generation_id: generationId,
+            class_id: classId,
+            day: sc.day + 1,
+            period: sc.period + 1,
+            is_free: false,
+            static_name: sc.name,
+          }, { requestKey: null });
+        }
+      }
+    }
+
     res.json({
-      status: "placeholder",
-      message: "Timetable generation algorithm not yet implemented",
-      rulesReceived: rules?.length || 0,
+      success: solverResult.success,
+      generationId,
+      status: solverResult.success ? 'satisfied' : 'failed',
+      solveTime: solverResult.solve_time_seconds,
+      entriesCount: solverResult.timetable.length,
     });
   } catch (error) {
-    res.status(500).json({ error: "Failed to generate timetable" });
+    console.error("Generation error:", error);
+    res.status(500).json({ error: "Failed to generate timetable", details: String(error) });
   }
 });
 
 // GET /api/timetable/:classId - Get generated timetable for a class
 router.get("/:classId", async (req: Request, res: Response) => {
   try {
+    const { classId } = req.params;
+    
+    // Get entries for this class
+    const entries = await pb.collection("timetable_entries").getFullList({
+      filter: `class_id = "${classId}"`,
+      sort: 'day,period',
+      requestKey: null,
+    });
+    
+    // Get subject info for mapping
+    const subjects = await pb.collection("subjects").getFullList({ requestKey: null });
+    const teachers = await pb.collection("teachers").getFullList({ requestKey: null });
+    
+    const formattedEntries = entries.map(e => ({
+      day: e.day,
+      period: e.period,
+      subjectId: e.subject_id,
+      subjectName: subjects.find(s => s.id === e.subject_id)?.name || e.static_name || '',
+      teacherId: e.teacher_id,
+      teacherName: teachers.find(t => t.id === e.teacher_id)?.name || '',
+      isStatic: !!e.static_name,
+    }));
+    
     res.json({
-      status: "placeholder",
-      classId: req.params.classId,
-      message: "Timetable retrieval not yet implemented",
+      classId,
+      entries: formattedEntries,
     });
   } catch (error) {
+    console.error("Failed to fetch class timetable:", error);
     res.status(500).json({ error: "Failed to fetch timetable" });
   }
 });
@@ -172,14 +323,39 @@ router.get("/:classId", async (req: Request, res: Response) => {
 // GET /api/timetable/teacher/:teacherId - Get teacher's schedule
 router.get("/teacher/:teacherId", async (req: Request, res: Response) => {
   try {
+    const { teacherId } = req.params;
+    
+    // Get entries for this teacher
+    const entries = await pb.collection("timetable_entries").getFullList({
+      filter: `teacher_id = "${teacherId}"`,
+      sort: 'day,period',
+      requestKey: null,
+    });
+    
+    // Get related info
+    const [classes, subjects] = await Promise.all([
+      pb.collection("classes").getFullList({ requestKey: null }),
+      pb.collection("subjects").getFullList({ requestKey: null }),
+    ]);
+    
+    const formattedEntries = entries.map(e => ({
+      day: e.day,
+      period: e.period,
+      classId: e.class_id,
+      className: classes.find(c => c.id === e.class_id)?.name || '',
+      subjectId: e.subject_id,
+      subjectName: subjects.find(s => s.id === e.subject_id)?.name || '',
+    }));
+    
     res.json({
-      status: "placeholder",
-      teacherId: req.params.teacherId,
-      message: "Teacher schedule retrieval not yet implemented",
+      teacherId,
+      entries: formattedEntries,
     });
   } catch (error) {
+    console.error("Failed to fetch teacher schedule:", error);
     res.status(500).json({ error: "Failed to fetch teacher schedule" });
   }
 });
 
 export default router;
+

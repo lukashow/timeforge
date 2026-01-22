@@ -38,7 +38,7 @@ export function DisciplinesPage() {
   
   // Static course dialog
   const [showStaticCourseForm, setShowStaticCourseForm] = useState(false)
-  const [newStaticCourse, setNewStaticCourse] = useState({ name: '周会', day: 0, period: 1, color: '#FCD34D' })
+  const [newStaticCourse, setNewStaticCourse] = useState({ name: '', day: 0, period: 1, color: '#FCD34D' })
 
   useEffect(() => {
     loadData()
@@ -527,6 +527,7 @@ export function DisciplinesPage() {
                       <Label>{t('curriculum.course_name', '课程名称')}</Label>
                       <Input
                         value={newStaticCourse.name}
+                        placeholder={t('curriculum.course_name_placeholder')}
                         onChange={(e) => setNewStaticCourse({ ...newStaticCourse, name: e.target.value })}
                         className="mt-2"
                       />
@@ -543,7 +544,7 @@ export function DisciplinesPage() {
                           </SelectTrigger>
                           <SelectContent>
                             {WEEKDAYS.slice(0, 5).map((day, i) => (
-                              <SelectItem key={i} value={String(i)}>{day}</SelectItem>
+                              <SelectItem key={i} value={String(i)}>{t(`weekdays.${day}`)}</SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
@@ -586,7 +587,7 @@ export function DisciplinesPage() {
                     style={{ backgroundColor: course.color }}
                   />
                   <span className="font-medium">{course.name}</span>
-                  <Badge variant="secondary">{WEEKDAYS[course.day]} {t('curriculum.period_num', '第{{period}}节', { period: course.period })}</Badge>
+                  <Badge variant="secondary">{t(`weekdays.${WEEKDAYS[course.day]}`)} {t('curriculum.period_num', '第{{period}}节', { period: course.period })}</Badge>
                   <Button
                     size="sm"
                     variant="ghost"

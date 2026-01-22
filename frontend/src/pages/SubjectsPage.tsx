@@ -78,7 +78,7 @@ export function SubjectsPage() {
       })
     } catch (err) {
       console.error('Import failed:', err)
-      setImportResult({ show: true, success: 0, errors: ['文件解析失败'] })
+      setImportResult({ show: true, success: 0, errors: [t('resources.error_parse_file')] })
     }
   }
 

@@ -91,7 +91,7 @@ export function TeachersPage() {
       })
     } catch (err) {
       console.error('Import failed:', err)
-      setImportResult({ show: true, success: 0, errors: ['文件解析失败'] })
+      setImportResult({ show: true, success: 0, errors: [t('resources.error_parse_file')] })
     }
   }
 
@@ -385,7 +385,7 @@ export function TeachersPage() {
               <div className="flex bg-muted border-b">
                 <div className="w-20 p-2 text-center text-sm font-medium">{t('resources.period_index')}</div>
                 {WEEKDAYS.slice(0, 5).map((day) => (
-                  <div key={day} className="flex-1 p-2 text-center text-sm font-medium border-l">{day}</div>
+                  <div key={day} className="flex-1 p-2 text-center text-sm font-medium border-l">{t(`weekdays.${day}`)}</div>
                 ))}
               </div>
               {PERIODS.map((period) => (
