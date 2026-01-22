@@ -72,7 +72,8 @@
     "placeholder": "你想找什么？"
   },
   "user": {
-    "role_admin": "Admin"
+    "role_admin": "Admin",
+    "default_name": "用户"
   },
   "lang": {
     "en": "English",
@@ -141,7 +142,11 @@
     "calculation": "计算",
     "includes": "含",
     "coming_soon": "即将推出",
-    "page_in_development": "此页面正在开发中，敬请期待。"
+    "page_in_development": "此页面正在开发中，敬请期待。",
+    "close": "关闭",
+    "brand": "TimeForge",
+    "copyright": "版权所有 © {{year}} {{brand}}",
+    "privacy_policy": "隐私政策"
   },
   "class": {
     "error_load": "无法加载班级数据",

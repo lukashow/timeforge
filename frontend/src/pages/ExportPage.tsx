@@ -447,16 +447,16 @@ export function ExportPage() {
       </div>
 
       {/* Export All Classes */}
-      <Card className="p-6">
-        <div className="flex items-center justify-between mb-6">
+      <Card className="p-6 bg-green-600 border-none text-white shadow-lg">
+        <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-foreground">{t('export.all_timetable_name', '全部课表')}</h3>
-            <p className="text-sm text-muted-foreground">{t('pages.excel_desc', '导出所有班级课表到一个Excel文件，每个班级一个工作表')}</p>
+            <h3 className="text-xl font-bold text-white mb-2">{t('export.all_timetable_name', '全部课表')}</h3>
+            <p className="text-sm text-green-50/90">{t('pages.excel_desc', '导出所有班级课表到一个Excel文件，每个班级一个工作表')}</p>
           </div>
           <Button
             onClick={() => handleExportExcel('all')}
             disabled={exporting}
-            className="bg-green-600 hover:bg-green-700"
+            className="bg-white text-green-700 hover:bg-green-50 hover:text-green-800 font-semibold px-6"
           >
             {exporting ? (
               <Loader2 className="w-4 h-4 animate-spin mr-2" />
@@ -468,100 +468,102 @@ export function ExportPage() {
         </div>
       </Card>
 
-      {/* Export by Class */}
-      <Card className="p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <h3 className="text-lg font-semibold text-foreground">{t('export.class_timetable', '班级课表')}</h3>
-            <Select value={selectedClassId} onValueChange={setSelectedClassId}>
-              <SelectTrigger className="w-40">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {classes.map((cls) => (
-                  <SelectItem key={cls.id} value={cls.id}>{cls.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Export by Class */}
+        <Card className="p-6">
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-foreground mb-4">{t('export.class_timetable', '班级课表')}</h3>
+            <div className="flex items-center gap-4">
+              <Select value={selectedClassId} onValueChange={setSelectedClassId}>
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {classes.map((cls) => (
+                    <SelectItem key={cls.id} value={cls.id}>{cls.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <Button
-              size="sm"
               variant="outline"
               onClick={() => handleExportExcel('class')}
-              disabled={exporting}
-              className="text-green-700 border-green-300 hover:bg-green-50"
+              disabled={exporting || !selectedClassId}
+              className="flex-1 text-green-700 border-green-200 hover:bg-green-50 hover:border-green-300"
             >
               <FileSpreadsheet className="w-4 h-4 mr-2" />
               Excel
             </Button>
             <Button
-              size="sm"
               variant="outline"
               onClick={() => handleExportPDF('class')}
-              disabled={exporting}
-              className="text-red-700 border-red-300 hover:bg-red-50"
+              disabled={exporting || !selectedClassId}
+              className="flex-1 text-red-700 border-red-200 hover:bg-red-50 hover:border-red-300"
             >
               <FileText className="w-4 h-4 mr-2" />
               PDF
             </Button>
           </div>
-        </div>
-      </Card>
+        </Card>
 
-      {/* Export by Teacher */}
-      <Card className="p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <h3 className="text-lg font-semibold text-foreground">{t('export.teacher_timetable', '教师课表')}</h3>
-            <Select value={selectedTeacherId} onValueChange={setSelectedTeacherId}>
-              <SelectTrigger className="w-40">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {teachers.map((teacher) => (
-                  <SelectItem key={teacher.id} value={teacher.id}>{teacher.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        {/* Export by Teacher */}
+        <Card className="p-6">
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-foreground mb-4">{t('export.teacher_timetable', '教师课表')}</h3>
+            <div className="flex items-center gap-4">
+              <Select value={selectedTeacherId} onValueChange={setSelectedTeacherId}>
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {teachers.map((teacher) => (
+                    <SelectItem key={teacher.id} value={teacher.id}>{teacher.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <Button
-              size="sm"
               variant="outline"
               onClick={() => handleExportExcel('teacher')}
-              disabled={exporting}
-              className="text-green-700 border-green-300 hover:bg-green-50"
+              disabled={exporting || !selectedTeacherId}
+              className="flex-1 text-green-700 border-green-200 hover:bg-green-50 hover:border-green-300"
             >
               <FileSpreadsheet className="w-4 h-4 mr-2" />
               Excel
             </Button>
             <Button
-              size="sm"
               variant="outline"
               onClick={() => handleExportPDF('teacher')}
-              disabled={exporting}
-              className="text-red-700 border-red-300 hover:bg-red-50"
+              disabled={exporting || !selectedTeacherId}
+              className="flex-1 text-red-700 border-red-200 hover:bg-red-50 hover:border-red-300"
             >
               <FileText className="w-4 h-4 mr-2" />
               PDF
             </Button>
           </div>
-        </div>
-      </Card>
+        </Card>
+      </div>
 
-      {/* Quick Links */}
-      <Card className="p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Icon icon="tabler:eye" className="w-5 h-5 text-primary" />
-            <span className="text-sm text-muted-foreground">{t('pages.view_before_export', '导出前想预览课表？')}</span>
-          </div>
-          <Button variant="ghost" size="sm" onClick={() => navigate('/timetables')}>
-            {t('pages.view_timetables', '查看课表')}
-            <Icon icon="tabler:arrow-right" className="w-4 h-4 ml-1" />
-          </Button>
+      {/* Quick View */}
+      <Card 
+        className="p-8 border-dashed border-2 hover:border-primary/50 transition-all cursor-pointer flex flex-col items-center justify-center gap-4 group hover:bg-accent/5"
+        onClick={() => navigate('/timetables')}
+      >
+        <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform group-hover:bg-primary/20">
+          <Icon icon="tabler:eye" className="w-8 h-8 text-primary" />
         </div>
+        <div className="text-center">
+          <h3 className="text-lg font-semibold text-foreground mb-1">{t('pages.view_timetables', '查看课表')}</h3>
+          <p className="text-sm text-muted-foreground">{t('pages.view_before_export', '导出前想预览课表？')}</p>
+        </div>
+        <Button variant="default" className="mt-2">
+          {t('pages.go_to_timetables', '前往查看')}
+          <Icon icon="tabler:arrow-right" className="w-4 h-4 ml-2" />
+        </Button>
       </Card>
     </div>
   )

@@ -42,7 +42,7 @@ export function LoginPage() {
         {/* Logo */}
         <div className="flex items-center justify-center gap-3 mb-8">
           <Icon icon="tabler:clock" className="w-10 h-10 text-primary" />
-          <span className="font-bold text-3xl text-primary tracking-tight">TimeForge</span>
+          <span className="font-bold text-3xl text-primary tracking-tight">{t('common.brand')}</span>
         </div>
 
         {/* Title */}
@@ -179,7 +179,7 @@ export function LoginPage() {
       {/* Footer */}
       <div className="absolute bottom-6 text-center w-full">
         <p className="text-xs text-muted-foreground">
-          Copyright © 2024 TimeForge  |  <button className="hover:underline">隐私政策</button>
+          {t('common.copyright', { year: new Date().getFullYear(), brand: t('common.brand') })}  |  <button className="hover:underline">{t('common.privacy_policy')}</button>
         </p>
       </div>
     </div>

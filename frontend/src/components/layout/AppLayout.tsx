@@ -90,7 +90,7 @@ export function AppLayout() {
         <div className="h-20 flex items-center px-8 border-b border-border">
           <Link to="/" className="flex items-center gap-3">
             <Icon icon="tabler:clock" className="w-8 h-8 text-primary" />
-            <span className="font-bold text-2xl text-primary tracking-tight">TimeForge</span>
+            <span className="font-bold text-2xl text-primary tracking-tight">{t('common.brand')}</span>
           </Link>
         </div>
 
@@ -168,7 +168,7 @@ export function AppLayout() {
                <div className="relative group">
                  <button className="flex items-center gap-3 ml-2 pl-4 border-l border-gray-200 cursor-pointer">
                    <div className="text-right hidden sm:block">
-                      <div className="text-sm font-bold text-foreground">{user?.name || 'User'}</div>
+                      <div className="text-sm font-bold text-foreground">{user?.name || t('user.default_name')}</div>
                       <div className="text-xs text-muted-foreground text-right">{user?.email || ''}</div>
                    </div>
                    <Avatar className="w-10 h-10 border-2 border-white shadow-sm">

@@ -72,7 +72,8 @@
     "placeholder": "What are you looking for?"
   },
   "user": {
-    "role_admin": "Admin"
+    "role_admin": "Admin",
+    "default_name": "User"
   },
   "lang": {
     "en": "English",
@@ -143,7 +144,11 @@
     "includes": "includes",
     "free": "Free",
     "coming_soon": "Coming Soon",
-    "page_in_development": "This page is under development."
+    "page_in_development": "This page is under development.",
+    "close": "Close",
+    "brand": "TimeForge",
+    "copyright": "Copyright © {{year}} {{brand}}",
+    "privacy_policy": "Privacy Policy"
   },
   "class": {
     "error_load": "Failed to load classes data",
