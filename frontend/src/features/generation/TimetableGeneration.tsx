@@ -97,13 +97,13 @@ export function TimetableGeneration({ onNext, onBack }: StepProps) {
           })),
         })
       } else {
-        setError(response.error || 'Generation failed')
+        setError(response.error || t('generation.error_generic'))
         setResult({
           successRate: 0,
           totalPeriods: 0,
           conflicts: [{
             id: '1',
-            message: response.error || 'Unknown error occurred',
+            message: response.error || t('generation.error_unknown'),
             severity: 'error',
           }],
         })
@@ -118,7 +118,7 @@ export function TimetableGeneration({ onNext, onBack }: StepProps) {
         totalPeriods: 0,
         conflicts: [{
           id: '1',
-          message: `生成失败: ${errorMsg}`,
+          message: t('generation.error_failed_with_msg', { error: errorMsg }),
           severity: 'error',
         }],
       })

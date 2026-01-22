@@ -427,7 +427,7 @@ export function TimeGridSetup({ onNext }: StepProps) {
                                   {breakAfter.name}
                                 </div>
                                 <div className="text-xs text-gray-600 text-center">
-                                  {breakAfter.duration}{t('time_grid.unit_minutes')}
+                                  {breakAfter.duration} {t('time_grid.unit_minutes')}
                                 </div>
                               </div>
                             ))}

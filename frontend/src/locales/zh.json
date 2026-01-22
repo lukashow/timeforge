@@ -1,20 +1,23 @@
 {
   "menu": {
-    "home": "首页",
-    "students": "学生",
-    "teachers": "教师",
-    "teachers_all": "所有教师",
-    "teachers_details": "教师详情",
-    "library": "图书馆",
-    "account": "账户",
-    "class": "班级",
-    "subject": "学科",
-    "routine": "课表",
-    "attendance": "考勤",
-    "exam": "考试",
-    "notice": "通知",
-    "transport": "交通",
-    "hostel": "宿舍"
+    "wizard": "设置向导",
+    "dashboard": "仪表盘",
+    "time_grid": "作息时间",
+    "schedules": "日程管理",
+    "subjects": "科目管理",
+    "teachers": "教师管理",
+    "classrooms": "教室管理",
+    "disciplines": "学科组",
+    "assignments": "任课分配",
+    "generation": "课表生成",
+    "timetables": "查看课表",
+    "export": "导出",
+    "users": "用户管理",
+    "section_time": "时间管理",
+    "section_resources": "资源管理",
+    "section_curriculum": "课程设置",
+    "section_scheduling": "排课",
+    "section_admin": "系统管理"
   },
   "progressbar": {
 		"step_school_scheduling": "规划学校时间",
@@ -34,8 +37,40 @@
   "lang": {
     "en": "English",
     "zh": "中文"
-  }
-  ,
+  },
+  "auth": {
+    "login_title": "欢迎回来",
+    "login_subtitle": "请输入您的账号信息登录系统",
+    "email": "邮箱 / 手机号",
+    "email_placeholder": "请输入邮箱或手机号",
+    "password": "密码",
+    "password_placeholder": "请输入密码",
+    "forgot_password": "忘记密码？",
+    "login": "登 录",
+    "logging_in": "登录中...",
+    "or_continue_with": "或其他方式登录",
+    "no_account": "还没有账号？",
+    "contact_admin": "联系管理员",
+    "logout": "退出登录",
+    "login_error": "登录失败，请检查邮箱和密码"
+  },
+  "dashboard": {
+    "title": "仪表盘",
+    "subtitle": "欢迎使用 TimeForge 智能排课系统",
+    "quick_setup": "快速设置向导",
+    "quick_setup_desc": "使用向导逐步完成课表配置",
+    "view_timetables": "查看课表",
+    "view_timetables_desc": "查看已生成的课表",
+    "export": "导出",
+    "export_desc": "导出课表为Excel或PDF",
+    "stat_classes": "班级",
+    "stat_teachers": "教师",
+    "stat_subjects": "科目",
+    "stat_timetables": "课表",
+    "getting_started": "开始使用",
+    "getting_started_desc": "如果您是第一次使用，建议先使用设置向导完成基础配置。",
+    "start_wizard": "启动设置向导"
+  },
   "common": {
     "prev": "上一步",
     "next": "下一步",
@@ -57,7 +92,11 @@
     "select_form_teacher": "选择班主任",
     "confirm_next": "确认无误，下一步",
     "class": "班级",
-    "teacher": "教师"
+    "teacher": "教师",
+    "calculation": "计算",
+    "includes": "含",
+    "coming_soon": "即将推出",
+    "page_in_development": "此页面正在开发中，敬请期待。"
   },
   "class": {
     "error_load": "无法加载班级数据",
@@ -215,7 +254,10 @@
     "stat_pending_issues": "待处理",
     "conflicts_details": "冲突详情",
     "regenerate": "重新生成",
-    "view_timetable_next": "查看课表，下一步"
+    "view_timetable_next": "查看课表，下一步",
+    "error_generic": "生成失败",
+    "error_unknown": "发生未知错误",
+    "error_failed_with_msg": "生成失败: {{error}}"
   },
   "weekdays": {
     "mon": "周一",

@@ -1,52 +1,92 @@
-import type { ReactNode } from 'react'
 import { Icon } from '@iconify/react'
 import { Input } from '@/components/ui/input'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Outlet, Link, useLocation } from 'react-router-dom'
 
 import '@/i18n'
 import { useTranslation } from 'react-i18next'
+import { useAuth } from '@/contexts/AuthContext'
 
-interface LayoutProps {
-  children: ReactNode
-  currentStep?: number
-}
-
+// Menu item types
 interface MenuItem {
   icon: string
   labelKey: string
   path: string
-  submenu?: { labelKey: string; path: string }[]
 }
 
-const menuItems: MenuItem[] = [
-  { icon: 'tabler:home', labelKey: 'menu.home', path: '/' },
-  { icon: 'tabler:users', labelKey: 'menu.students', path: '/students' },
-  { icon: 'tabler:users', labelKey: 'menu.teachers', path: '/teachers', submenu: [
-    { labelKey: 'menu.teachers_all', path: '/teachers/all' },
-    { labelKey: 'menu.teachers_details', path: '/teachers/details' }
-  ]},
-  { icon: 'tabler:books', labelKey: 'menu.library', path: '/library' },
-  { icon: 'tabler:user', labelKey: 'menu.account', path: '/account' },
-  { icon: 'tabler:calendar', labelKey: 'menu.class', path: '/class' },
-  { icon: 'tabler:book', labelKey: 'menu.subject', path: '/subject' },
-  { icon: 'tabler:calendar-time', labelKey: 'menu.routine', path: '/routine' },
-  { icon: 'tabler:clipboard-check', labelKey: 'menu.attendance', path: '/attendance' },
-  { icon: 'tabler:file-text', labelKey: 'menu.exam', path: '/exam' },
-  { icon: 'tabler:bell', labelKey: 'menu.notice', path: '/notice' },
-  { icon: 'tabler:bus', labelKey: 'menu.transport', path: '/transport' },
-  { icon: 'tabler:building-skyscraper', labelKey: 'menu.hostel', path: '/hostel' },
+interface MenuSection {
+  titleKey?: string
+  items: MenuItem[]
+}
+
+// Menu structure organized by workflow
+const menuSections: MenuSection[] = [
+  {
+    // Quick Start section (no title)
+    items: [
+      { icon: 'tabler:wand', labelKey: 'menu.wizard', path: '/wizard' },
+      { icon: 'tabler:layout-dashboard', labelKey: 'menu.dashboard', path: '/' },
+    ],
+  },
+  {
+    titleKey: 'menu.section_time',
+    items: [
+      { icon: 'tabler:clock', labelKey: 'menu.time_grid', path: '/time-grid' },
+      { icon: 'tabler:calendar-event', labelKey: 'menu.schedules', path: '/schedules' },
+    ],
+  },
+  {
+    titleKey: 'menu.section_resources',
+    items: [
+      { icon: 'tabler:book', labelKey: 'menu.subjects', path: '/subjects' },
+      { icon: 'tabler:users', labelKey: 'menu.teachers', path: '/teachers' },
+      { icon: 'tabler:building', labelKey: 'menu.classrooms', path: '/classrooms' },
+    ],
+  },
+  {
+    titleKey: 'menu.section_curriculum',
+    items: [
+      { icon: 'tabler:category', labelKey: 'menu.disciplines', path: '/disciplines' },
+      { icon: 'tabler:clipboard-list', labelKey: 'menu.assignments', path: '/assignments' },
+    ],
+  },
+  {
+    titleKey: 'menu.section_scheduling',
+    items: [
+      { icon: 'tabler:cpu', labelKey: 'menu.generation', path: '/generation' },
+      { icon: 'tabler:table', labelKey: 'menu.timetables', path: '/timetables' },
+      { icon: 'tabler:download', labelKey: 'menu.export', path: '/export' },
+    ],
+  },
+  {
+    titleKey: 'menu.section_admin',
+    items: [
+      { icon: 'tabler:user-cog', labelKey: 'menu.users', path: '/users' },
+    ],
+  },
 ]
 
-export function AppLayout({ children }: LayoutProps) {
+export function AppLayout() {
   const { t, i18n } = useTranslation()
+  const { user, logout } = useAuth()
+  const location = useLocation()
 
   const toggleLanguage = () => {
     const next = i18n.language === 'zh' ? 'en' : 'zh'
     i18n.changeLanguage(next)
   }
 
-  // TODO: Add router logic for active state. For now, defaulting to first item as visual demo if explicit routing is missing.
-  const activePath = '/' 
+  // Get current page title based on active route
+  const getCurrentPageTitle = () => {
+    for (const section of menuSections) {
+      for (const item of section.items) {
+        if (item.path === location.pathname) {
+          return t(item.labelKey)
+        }
+      }
+    }
+    return t('menu.dashboard')
+  }
 
   return (
     <div className="flex h-screen bg-background font-sans text-foreground">
@@ -54,41 +94,51 @@ export function AppLayout({ children }: LayoutProps) {
       <aside className="w-[250px] bg-card border-r border-border flex flex-col shadow-none z-20">
         {/* Logo */}
         <div className="h-20 flex items-center px-8 border-b border-border">
-          <div className="flex items-center gap-3">
-			<Icon icon="tabler:clock" className="w-8 h-8 text-primary" />
+          <Link to="/" className="flex items-center gap-3">
+            <Icon icon="tabler:clock" className="w-8 h-8 text-primary" />
             <span className="font-bold text-2xl text-primary tracking-tight">TimeForge</span>
-          </div>
+          </Link>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto py-6 px-4 space-y-1">
-          {menuItems.map((item, index) => {
-            const isActive = item.path === activePath
-            
-            return (
-              <div key={index}>
-                <button
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
-                    ${isActive 
-                      ? 'bg-[#F3F0FF] text-accent font-semibold' 
-                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                    }`}
-                >
-                  {/* Left Active Indicator (Optional based on "solid left border" description, but using soft background style) */}
-                  {isActive && (
-                     <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-accent rounded-r-full opacity-0" />
-                  )}
-
-                  <Icon icon={item.icon} className={`w-5 h-5 ${isActive ? 'text-accent' : 'text-muted-foreground group-hover:text-foreground'}`} />
-                  <span className="text-sm">{t(item.labelKey)}</span>
+        <nav className="flex-1 overflow-y-auto py-4 px-4">
+          {menuSections.map((section, sectionIndex) => (
+            <div key={sectionIndex} className={sectionIndex > 0 ? 'mt-4 pt-4 border-t border-border' : ''}>
+              {/* Section Title */}
+              {section.titleKey && (
+                <div className="px-4 mb-2">
+                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    {t(section.titleKey)}
+                  </span>
+                </div>
+              )}
+              
+              {/* Section Items */}
+              <div className="space-y-1">
+                {section.items.map((item) => {
+                  const isActive = location.pathname === item.path
                   
-                  {item.submenu && (
-                    <Icon icon="tabler:chevron-down" className="w-4 h-4 ml-auto opacity-50" />
-                  )}
-                </button>
+                  return (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 group relative
+                        ${isActive 
+                          ? 'bg-accent/10 text-accent font-semibold' 
+                          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                        }`}
+                    >
+                      <Icon 
+                        icon={item.icon} 
+                        className={`w-5 h-5 ${isActive ? 'text-accent' : 'text-muted-foreground group-hover:text-foreground'}`} 
+                      />
+                      <span className="text-sm">{t(item.labelKey)}</span>
+                    </Link>
+                  )
+                })}
               </div>
-            )
-          })}
+            </div>
+          ))}
         </nav>
       </aside>
 
@@ -96,9 +146,9 @@ export function AppLayout({ children }: LayoutProps) {
       <div className="flex-1 flex flex-col overflow-hidden bg-background relative">
          {/* Top Navigation */}
         <header className="h-20 bg-background/80 backdrop-blur-md px-8 flex items-center justify-between sticky top-0 z-10">
-          {/* Header Title / Breadcrumbs (Placeholder) */}
+          {/* Header Title */}
           <h2 className="text-xl font-semibold text-foreground hidden md:block">
-            {t('menu.home')}
+            {getCurrentPageTitle()}
           </h2>
 
           <div className="flex items-center gap-6 ml-auto">
@@ -119,30 +169,43 @@ export function AppLayout({ children }: LayoutProps) {
                <button onClick={toggleLanguage} className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-white shadow-sm hover:shadow-md transition-all border border-transparent hover:border-gray-100">
                   <span className="font-bold text-xs">{i18n.language === 'zh' ? 'EN' : 'ZH'}</span>
                </button>
-               
-               <button className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-white shadow-sm hover:shadow-md transition-all relative border border-transparent hover:border-gray-100">
-                  <Icon icon="tabler:bell" className="w-5 h-5" />
-                  <span className="absolute top-2.5 right-3 w-2 h-2 bg-destructive rounded-full border-2 border-white"></span>
-               </button>
 
-               <div className="flex items-center gap-3 ml-2 pl-4 border-l border-gray-200">
-                 <div className="text-right hidden sm:block">
-                    <div className="text-sm font-bold text-foreground">Priscilla Lily</div>
-                    <div className="text-xs text-muted-foreground text-right">{t('user.role_admin')}</div>
+               {/* User Dropdown */}
+               <div className="relative group">
+                 <button className="flex items-center gap-3 ml-2 pl-4 border-l border-gray-200 cursor-pointer">
+                   <div className="text-right hidden sm:block">
+                      <div className="text-sm font-bold text-foreground">{user?.name || 'User'}</div>
+                      <div className="text-xs text-muted-foreground text-right">{user?.email || ''}</div>
+                   </div>
+                   <Avatar className="w-10 h-10 border-2 border-white shadow-sm">
+                      <AvatarImage src={user?.avatar} />
+                      <AvatarFallback className="bg-primary text-white font-bold">
+                        {user?.name?.charAt(0).toUpperCase() || 'U'}
+                      </AvatarFallback>
+                   </Avatar>
+                 </button>
+                 
+                 {/* Dropdown Menu */}
+                 <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                   <div className="p-2">
+                     <button
+                       onClick={logout}
+                       className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
+                     >
+                       <Icon icon="tabler:logout" className="w-4 h-4" />
+                       {t('auth.logout', '退出登录')}
+                     </button>
+                   </div>
                  </div>
-                 <Avatar className="w-10 h-10 border-2 border-white shadow-sm cursor-pointer">
-                    <AvatarImage src="" />
-                    <AvatarFallback className="bg-primary text-white font-bold">PL</AvatarFallback>
-                 </Avatar>
                </div>
             </div>
           </div>
         </header>
 
-        {/* Page Content */}
+        {/* Page Content - Outlet for router */}
         <main className="flex-1 overflow-auto px-8 py-6">
           <div className="max-w-7xl mx-auto pb-12">
-             {children}
+             <Outlet />
           </div>
         </main>
       </div>

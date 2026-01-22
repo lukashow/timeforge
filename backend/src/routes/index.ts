@@ -10,11 +10,15 @@ import timeGridRouter from "./time-grid.ts";
 import timetableRouter from "./timetable.ts";
 import excelRouter from "./excel.ts";
 import generationRouter from "./generation.ts";
+import authRouter from "./auth.ts";
 
 const router = Router();
 
 // Health check
 router.use("/health", healthRouter);
+
+// Auth routes
+router.use("/api/auth", authRouter);
 
 // API routes
 router.use("/api/subjects", subjectsRouter);
@@ -29,4 +33,3 @@ router.use("/api/excel", excelRouter);
 router.use("/api/generation", generationRouter);
 
 export default router;
-

@@ -503,7 +503,7 @@ export function TeachingResourceCreation({ onNext, onBack }: StepProps) {
                 <div className="relative flex-1 max-w-md">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <Input
-                    placeholder="搜索教师姓名..."
+                    placeholder={t('resources.search_teacher')}
                     value={teacherFilter}
                     onChange={(e) => setTeacherFilter(e.target.value)}
                     className="pl-10 bg-[#F9FAFB]"
@@ -515,7 +515,7 @@ export function TeachingResourceCreation({ onNext, onBack }: StepProps) {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">所有科目</SelectItem>
+                    <SelectItem value="all">{t('resources.all_subjects')}</SelectItem>
                     {subjects.map(s => (
                       <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
                     ))}

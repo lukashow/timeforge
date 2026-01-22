@@ -305,7 +305,7 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
         <div className="lg:col-span-1">
           <Card className="p-4 bg-white border border-gray-200">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-gray-900">学科组列表</h3>
+              <h3 className="font-semibold text-gray-900">{t('curriculum.discipline_list')}</h3>
               <Button
                 size="sm"
                 variant="ghost"
@@ -319,27 +319,27 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
             {showNewDisciplineForm && (
               <div className="mb-4 p-3 bg-gray-50 rounded-lg space-y-2">
                 <Input
-                  placeholder="学科组名称"
+                  placeholder={t('curriculum.discipline_name_placeholder')}
                   value={newDisciplineName}
                   onChange={(e) => setNewDisciplineName(e.target.value)}
                   className="bg-white"
                 />
                 <Select value={newDisciplineCategory} onValueChange={setNewDisciplineCategory}>
                   <SelectTrigger className="bg-white">
-                    <SelectValue placeholder="选择学部" />
+                    <SelectValue placeholder={t('curriculum.select_section_placeholder')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="高中部">高中部</SelectItem>
-                    <SelectItem value="初中部">初中部</SelectItem>
-                    <SelectItem value="小学部">小学部</SelectItem>
+                    <SelectItem value="高中部">{t('curriculum.section_high')}</SelectItem>
+                    <SelectItem value="初中部">{t('curriculum.section_middle')}</SelectItem>
+                    <SelectItem value="小学部">{t('curriculum.section_primary')}</SelectItem>
                   </SelectContent>
                 </Select>
                 <div className="flex gap-2">
                   <Button size="sm" variant="ghost" onClick={() => setShowNewDisciplineForm(false)} className="flex-1">
-                    取消
+                    {t('common.cancel')}
                   </Button>
                   <Button size="sm" onClick={addDiscipline} className="flex-1 bg-primary hover:bg-purple-700">
-                    添加
+                    {t('common.add')}
                   </Button>
                 </div>
               </div>
@@ -368,7 +368,7 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
                       <div className="text-xs text-gray-600 mb-2">{discipline.category}</div>
                       <div className="flex items-center gap-2">
                         <div className={`text-xs ${hasIssue ? 'text-red-600' : 'text-gray-600'}`}>
-                          {total} 节/周 {discipline.staticCourses?.length > 0 && `(含${discipline.staticCourses.length}节固定)`}
+                          {total} {t('curriculum.periods_per_week')} {discipline.staticCourses?.length > 0 && `(${t('common.includes')} ${discipline.staticCourses.length} ${t('curriculum.static_courses')})`}
                         </div>
                         {hasIssue && <AlertCircle className="w-3 h-3 text-red-500" />}
                       </div>
@@ -410,11 +410,11 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">{currentDiscipline?.name}</h3>
-                <p className="text-sm text-gray-600">科目课时配置</p>
+                <p className="text-sm text-gray-600">{t('curriculum.allocation_config')}</p>
               </div>
               <Button size="sm" onClick={addSubjectAllocation} className="bg-primary hover:bg-purple-700">
                 <Plus className="w-4 h-4 mr-2" />
-                添加科目
+                {t('curriculum.add_subject')}
               </Button>
             </div>
 
@@ -460,7 +460,7 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
 
                       <div className="grid grid-cols-3 gap-3">
                         <div>
-                          <Label className="text-xs text-gray-600 mb-1 block">总周课时</Label>
+                          <Label className="text-xs text-gray-600 mb-1 block">{t('curriculum.total_weekly_periods')}</Label>
                           <Input
                             type="number"
                             min="1"
@@ -471,7 +471,7 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
                           />
                         </div>
                         <div>
-                          <Label className="text-xs text-gray-600 mb-1 block">双节课数</Label>
+                          <Label className="text-xs text-gray-600 mb-1 block">{t('curriculum.double_periods')}</Label>
                           <Input
                             type="number"
                             min="0"
@@ -482,7 +482,7 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
                           />
                         </div>
                         <div>
-                          <Label className="text-xs text-gray-600 mb-1 block">单节课数</Label>
+                          <Label className="text-xs text-gray-600 mb-1 block">{t('curriculum.single_periods')}</Label>
                           <Input
                             type="number"
                             value={alloc.singlePeriods}
@@ -494,9 +494,9 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
 
                       <div className="flex items-center justify-between text-sm">
                         <div className="text-gray-600">
-                          计算：{alloc.doublePeriods} × 2 + {alloc.singlePeriods} × 1 = {alloc.doublePeriods * 2 + alloc.singlePeriods} 节
+                          {t('common.calculation')}: {alloc.doublePeriods} × 2 + {alloc.singlePeriods} × 1 = {alloc.doublePeriods * 2 + alloc.singlePeriods} {t('curriculum.period_suffix')}
                           {alloc.doublePeriods * 2 + alloc.singlePeriods !== alloc.totalPeriods && (
-                            <span className="text-red-600 ml-2">（不匹配！）</span>
+                            <span className="text-red-600 ml-2">{t('curriculum.calc_mismatch')}</span>
                           )}
                         </div>
                         <div className="flex items-center gap-2">
@@ -504,7 +504,7 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
                             checked={alloc.requiresLab}
                             onCheckedChange={(checked) => updateAllocation(alloc.id, 'requiresLab', checked)}
                           />
-                          <Label className="text-xs cursor-pointer">需要实验班</Label>
+                          <Label className="text-xs cursor-pointer">{t('resources.requires_lab')}</Label>
                         </div>
                       </div>
                     </div>
@@ -515,8 +515,8 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
               {currentDiscipline?.subjectAllocations.length === 0 && (
                 <div className="text-center py-12 text-gray-500">
                   <BookOpen className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                  <p>暂无科目配置</p>
-                  <p className="text-sm">点击"添加科目"开始配置</p>
+                  <p>{t('curriculum.no_config')}</p>
+                  <p className="text-sm">{t('curriculum.click_add_config')}</p>
                 </div>
               )}
             </div>
@@ -527,7 +527,7 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-primary" />
-                <h3 className="text-lg font-semibold text-gray-900">固定课程</h3>
+                <h3 className="text-lg font-semibold text-gray-900">{t('curriculum.static_courses')}</h3>
               </div>
               <Button
                 size="sm"
@@ -535,7 +535,7 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
                 className="bg-primary hover:bg-purple-700"
               >
                 <Plus className="w-4 h-4 mr-2" />
-                添加固定课程
+                {t('curriculum.add_static_course')}
               </Button>
             </div>
 
@@ -543,9 +543,9 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
               <Card className="p-4 bg-gray-50 border border-gray-200 mb-4">
                 <div className="space-y-3">
                   <div>
-                    <Label className="text-sm">课程名称</Label>
+                    <Label className="text-sm">{t('curriculum.course_name')}</Label>
                     <Input
-                      placeholder="如：周会、班会"
+                      placeholder={t('curriculum.course_name_placeholder')}
                       value={newStaticCourse.name}
                       onChange={(e) => setNewStaticCourse({ ...newStaticCourse, name: e.target.value })}
                       className="bg-white mt-1"
@@ -553,7 +553,7 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <Label className="text-sm">星期</Label>
+                      <Label className="text-sm">{t('curriculum.day')}</Label>
                       <Select
                         value={newStaticCourse.day.toString()}
                         onValueChange={(value) => setNewStaticCourse({ ...newStaticCourse, day: parseInt(value) })}
@@ -562,14 +562,14 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {WEEKDAYS.slice(0, 5).map((day, index) => (
-                            <SelectItem key={index} value={index.toString()}>{day}</SelectItem>
+                          {WEEKDAYS.slice(0, 5).map((_, index) => (
+                            <SelectItem key={index} value={index.toString()}>{t(`weekdays.${['mon', 'tue', 'wed', 'thu', 'fri'][index]}`)}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     </div>
                     <div>
-                      <Label className="text-sm">第几节</Label>
+                      <Label className="text-sm">{t('curriculum.period')}</Label>
                       <Select
                         value={newStaticCourse.period.toString()}
                         onValueChange={(value) => setNewStaticCourse({ ...newStaticCourse, period: parseInt(value) })}
@@ -579,14 +579,14 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
                         </SelectTrigger>
                         <SelectContent>
                           {Array.from({ length: 8 }, (_, i) => i + 1).map((p) => (
-                            <SelectItem key={p} value={p.toString()}>第 {p} 节</SelectItem>
+                            <SelectItem key={p} value={p.toString()}>{t('time_grid.period_label', { period: p })}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     </div>
                   </div>
                   <div>
-                    <Label className="text-sm">颜色</Label>
+                    <Label className="text-sm">{t('resources.label_color')}</Label>
                     <Input
                       type="color"
                       value={newStaticCourse.color}
@@ -596,10 +596,10 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
                   </div>
                   <div className="flex gap-2">
                     <Button size="sm" variant="ghost" onClick={() => setShowStaticCourseForm(false)} className="flex-1">
-                      取消
+                      {t('common.cancel')}
                     </Button>
                     <Button size="sm" onClick={addStaticCourse} className="flex-1 bg-primary hover:bg-purple-700">
-                      添加
+                      {t('common.add')}
                     </Button>
                   </div>
                 </div>
@@ -623,7 +623,7 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
                     <div>
                       <div className="font-medium text-gray-900">{course.name}</div>
                       <div className="text-sm text-gray-600">
-                        {WEEKDAYS[course.day]} 第{course.period}节
+                        {t(`weekdays.${['mon', 'tue', 'wed', 'thu', 'fri'][course.day]}`)} {t('time_grid.period_label', { period: course.period })}
                       </div>
                     </div>
                   </div>
@@ -639,7 +639,7 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
               ))}
               {currentDiscipline?.staticCourses.length === 0 && (
                 <div className="text-center py-8 text-gray-500">
-                  <p className="text-sm">暂无固定课程</p>
+                  <p className="text-sm">{t('curriculum.no_static_courses')}</p>
                 </div>
               )}
             </div>
@@ -649,18 +649,18 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
         {/* Right Side - Validator */}
         <div className="lg:col-span-1">
           <Card className="p-4 bg-white border border-gray-200 sticky top-4">
-            <h3 className="font-semibold text-gray-900 mb-4">实时校验器</h3>
+            <h3 className="font-semibold text-gray-900 mb-4">{t('curriculum.validator')}</h3>
 
             <div className="space-y-4">
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-gray-600">已分配课时</span>
+                  <span className="text-sm text-gray-600">{t('curriculum.assigned_periods')}</span>
                   <span className={`font-semibold ${isOverCapacity ? 'text-red-600' : 'text-primary'}`}>
                     {totalPeriods}
                   </span>
                 </div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-gray-600">可用总课时</span>
+                  <span className="text-sm text-gray-600">{t('curriculum.total_available_periods')}</span>
                   <span className="font-semibold text-gray-900">{maxPeriodsPerWeek}</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
@@ -683,9 +683,9 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
                     <>
                       <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
                       <div>
-                        <div className="font-medium text-red-900 text-sm mb-1">超标警告</div>
+                        <div className="font-medium text-red-900 text-sm mb-1">{t('curriculum.warning_overload')}</div>
                         <div className="text-xs text-red-700">
-                          总课时超过可用容量 {totalPeriods - maxPeriodsPerWeek} 节
+                          {t('curriculum.warning_overload_desc', { count: totalPeriods - maxPeriodsPerWeek })}
                         </div>
                       </div>
                     </>
@@ -693,9 +693,9 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
                     <>
                       <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                       <div>
-                        <div className="font-medium text-green-900 text-sm mb-1">配置正常</div>
+                        <div className="font-medium text-green-900 text-sm mb-1">{t('curriculum.config_normal')}</div>
                         <div className="text-xs text-green-700">
-                          剩余 {maxPeriodsPerWeek - totalPeriods} 节可分配
+                          {t('curriculum.config_normal_desc', { count: maxPeriodsPerWeek - totalPeriods })}
                         </div>
                       </div>
                     </>
@@ -704,7 +704,7 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
               </div>
 
               <div>
-                <h4 className="text-sm font-medium text-gray-700 mb-2">科目分布</h4>
+                <h4 className="text-sm font-medium text-gray-700 mb-2">{t('curriculum.subject_distribution')}</h4>
                 <div className="space-y-2">
                   {currentDiscipline?.subjectAllocations.map((alloc) => {
                     const subject = getSubjectById(alloc.subjectId)
@@ -712,17 +712,17 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
                       <div key={alloc.id} className="text-sm">
                         <div className="flex items-center justify-between mb-1">
                           <span className="text-gray-600">{subject?.name}</span>
-                          <span className="font-medium text-gray-900">{alloc.totalPeriods} 节</span>
+                          <span className="font-medium text-gray-900">{alloc.totalPeriods} {t('curriculum.period_suffix')}</span>
                         </div>
                         <div className="text-xs text-gray-500 flex gap-2">
                           {alloc.doublePeriods > 0 && (
-                            <Badge variant="outline" className="text-xs">{alloc.doublePeriods}双</Badge>
+                            <Badge variant="outline" className="text-xs">{alloc.doublePeriods}{t('curriculum.unit_double')}</Badge>
                           )}
                           {alloc.singlePeriods > 0 && (
-                            <Badge variant="outline" className="text-xs">{alloc.singlePeriods}单</Badge>
+                            <Badge variant="outline" className="text-xs">{alloc.singlePeriods}{t('curriculum.unit_single')}</Badge>
                           )}
                           {alloc.requiresLab && (
-                            <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700">实验班</Badge>
+                            <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700">{t('resources.requires_lab')}</Badge>
                           )}
                         </div>
                       </div>
@@ -737,10 +737,10 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
 
       <div className="mt-8 flex justify-between items-center">
         <Button variant="outline" onClick={onBack}>
-          上一步
+          {t('common.prev')}
         </Button>
         <Button className="bg-primary hover:bg-purple-700" onClick={onNext} disabled={isOverCapacity}>
-          确认配置，下一步
+          {t('curriculum.confirm_config_next')}
         </Button>
       </div>
 
@@ -748,23 +748,23 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
       <Dialog open={!!deleteConfirmDiscipline} onOpenChange={() => setDeleteConfirmDiscipline(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>确认删除学科组</DialogTitle>
+            <DialogTitle>{t('curriculum.confirm_delete_discipline')}</DialogTitle>
           </DialogHeader>
           <div className="py-4">
             <p className="text-gray-600 mb-4">
-              确定要删除 <span className="font-bold text-gray-900">{deleteConfirmDiscipline?.name}</span> 学科组吗？
+              {t('curriculum.delete_discipline_msg', { name: deleteConfirmDiscipline?.name })}
             </p>
             <p className="text-sm text-orange-600 bg-orange-50 p-3 rounded-lg">
-              ⚠️ 此操作将删除该学科组的所有配置，包括科目分配和固定课程。此操作不可撤销。
+              {t('curriculum.delete_discipline_warning')}
             </p>
           </div>
           <div className="flex gap-2 justify-end">
-            <Button variant="outline" onClick={() => setDeleteConfirmDiscipline(null)}>取消</Button>
+            <Button variant="outline" onClick={() => setDeleteConfirmDiscipline(null)}>{t('common.cancel')}</Button>
             <Button 
               variant="destructive" 
               onClick={() => deleteConfirmDiscipline && deleteDiscipline(deleteConfirmDiscipline)}
             >
-              确认删除
+              {t('common.confirm_delete')}
             </Button>
           </div>
         </DialogContent>
@@ -774,11 +774,11 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
       <Dialog open={!!editDiscipline} onOpenChange={() => setEditDiscipline(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>编辑学科组</DialogTitle>
+            <DialogTitle>{t('curriculum.edit_discipline')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div>
-              <Label>学科组名称</Label>
+              <Label>{t('curriculum.label_discipline_name')}</Label>
               <Input
                 value={editDiscipline?.name || ''}
                 onChange={(e) => setEditDiscipline(prev => prev ? { ...prev, name: e.target.value } : null)}
@@ -786,7 +786,7 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
               />
             </div>
             <div>
-              <Label>所属学部</Label>
+              <Label>{t('curriculum.label_section')}</Label>
               <Select 
                 value={editDiscipline?.category || '高中部'} 
                 onValueChange={(val) => setEditDiscipline(prev => prev ? { ...prev, category: val } : null)}
@@ -795,9 +795,9 @@ export function CurriculumDesign({ onNext, onBack }: StepProps) {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="高中部">高中部</SelectItem>
-                  <SelectItem value="初中部">初中部</SelectItem>
-                  <SelectItem value="小学部">小学部</SelectItem>
+                  <SelectItem value="高中部">{t('curriculum.section_high')}</SelectItem>
+                  <SelectItem value="初中部">{t('curriculum.section_middle')}</SelectItem>
+                  <SelectItem value="小学部">{t('curriculum.section_primary')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
