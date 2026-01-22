@@ -472,7 +472,7 @@ export function TimetableExport({ onBack }: StepProps) {
           <div className="flex items-center gap-2">
             <Badge className="bg-green-50 text-green-700 border-green-200 text-sm py-1 px-3">
               <CheckCircle2 className="w-4 h-4 mr-1" />
-              {t('export.generated')} ({entries.length} 条记录)
+              {t('export.generated')} ({entries.length} {t('common.actions')})
             </Badge>
           </div>
         </div>
@@ -507,7 +507,7 @@ export function TimetableExport({ onBack }: StepProps) {
                   className="text-green-700 border-green-300 hover:bg-green-50"
                 >
                   <FileSpreadsheet className="w-4 h-4 mr-2" />
-                  导出 Excel
+                  {t('export.export_excel')}
                 </Button>
               </div>
             </div>
@@ -599,7 +599,7 @@ export function TimetableExport({ onBack }: StepProps) {
                   className="text-green-700 border-green-300 hover:bg-green-50"
                 >
                   <FileSpreadsheet className="w-4 h-4 mr-2" />
-                  导出 Excel
+                  {t('export.export_excel')}
                 </Button>
                 <Button
                   size="sm"
@@ -608,7 +608,7 @@ export function TimetableExport({ onBack }: StepProps) {
                   className="text-red-700 border-red-300 hover:bg-red-50"
                 >
                   <FileText className="w-4 h-4 mr-2" />
-                  导出 PDF
+                  {t('export.export_pdf')}
                 </Button>
               </div>
             </div>
@@ -747,7 +747,7 @@ export function TimetableExport({ onBack }: StepProps) {
                   className="text-green-700 border-green-300 hover:bg-green-50"
                 >
                   <FileSpreadsheet className="w-4 h-4 mr-2" />
-                  导出 Excel
+                  {t('export.export_excel')}
                 </Button>
                 <Button
                   size="sm"
@@ -756,7 +756,7 @@ export function TimetableExport({ onBack }: StepProps) {
                   className="text-red-700 border-red-300 hover:bg-red-50"
                 >
                   <FileText className="w-4 h-4 mr-2" />
-                  导出 PDF
+                  {t('export.export_pdf')}
                 </Button>
               </div>
             </div>

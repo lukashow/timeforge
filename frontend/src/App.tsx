@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { StepProgressBar } from '@/components/layout/StepProgressBar'
 import { TimeGridSetup } from '@/features/time-grid/TimeGridSetup'
-import { ResourceLibrary } from '@/features/resources/ResourceLibrary'
+import { TeachingResourceCreation } from '@/features/resources/TeachingResourceCreation'
 import { CurriculumDesign } from '@/features/curriculum/CurriculumDesign'
-import { ClassFactory } from '@/features/classes/ClassFactory'
-import { AssignmentMatrix } from '@/features/assignments/AssignmentMatrix'
-import { GenerationTower } from '@/features/generation/GenerationTower'
+import { ClassCreation } from '@/features/classes/ClassCreation'
+import { TeacherAssignment } from '@/features/assignments/TeacherAssignment'
+import { TimetableGeneration } from '@/features/generation/TimetableGeneration'
 import { TimetableExport } from '@/features/export/TimetableExport'
 
 export default function App() {
@@ -39,15 +39,15 @@ export default function App() {
       case 1:
         return <TimeGridSetup onNext={handleNext} />
       case 2:
-        return <ResourceLibrary onNext={handleNext} onBack={handleBack} />
+        return <TeachingResourceCreation onNext={handleNext} onBack={handleBack} />
       case 3:
         return <CurriculumDesign onNext={handleNext} onBack={handleBack} />
       case 4:
-        return <ClassFactory onNext={handleNext} onBack={handleBack} />
+        return <ClassCreation onNext={handleNext} onBack={handleBack} />
       case 5:
-        return <AssignmentMatrix onNext={handleNext} onBack={handleBack} />
+        return <TeacherAssignment onNext={handleNext} onBack={handleBack} />
       case 6:
-        return <GenerationTower onNext={handleNext} onBack={handleBack} />
+        return <TimetableGeneration onNext={handleNext} onBack={handleBack} />
       case 7:
         return <TimetableExport onBack={handleBack} />
       default:

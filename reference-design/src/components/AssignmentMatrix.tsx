@@ -43,7 +43,7 @@ const teachers: Teacher[] = [
   { id: '6', name: '周老师', subject: '英语', currentLoad: 10, maxLoad: 22 },
 ];
 
-export function AssignmentMatrix({ onNext, onBack }: { onNext?: () => void; onBack?: () => void }) {
+export function TeacherAssignment({ onNext, onBack }: { onNext?: () => void; onBack?: () => void }) {
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [selectedCell, setSelectedCell] = useState<{ classId: string; subject: string } | null>(null);
   const [selectedGrade, setSelectedGrade] = useState<string>('初一');

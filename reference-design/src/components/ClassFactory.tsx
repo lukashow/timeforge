@@ -38,7 +38,7 @@ const mockTeachers: Teacher[] = [
   { id: '10', name: '郑老师', subject: '历史', load: 'light' },
 ];
 
-export function ClassFactory({ onNext, onBack }: { onNext?: () => void; onBack?: () => void }) {
+export function ClassCreation({ onNext, onBack }: { onNext?: () => void; onBack?: () => void }) {
   const [classPrefix, setClassPrefix] = useState('初一');
   const [startNumber, setStartNumber] = useState(1);
   const [endNumber, setEndNumber] = useState(30);

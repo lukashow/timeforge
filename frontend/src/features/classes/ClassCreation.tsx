@@ -13,7 +13,7 @@ import type { StepProps } from '@/types/common'
 import { disciplines as disciplinesApi, teachers as teachersApi, classes as classesApi } from '@/lib/api'
 import type { Discipline, Teacher, ClassRecord } from '@/lib/api'
 
-export function ClassFactory({ onNext, onBack }: StepProps) {
+export function ClassCreation({ onNext, onBack }: StepProps) {
   const { t } = useTranslation()
   // Loading states
   const [loading, setLoading] = useState(true)
@@ -349,7 +349,7 @@ export function ClassFactory({ onNext, onBack }: StepProps) {
                             </div>
                             <div>
                               <div className="text-sm font-medium text-gray-900">{teacher.name}</div>
-                              <div className="text-xs text-gray-500">已分配</div>
+                              <div className="text-xs text-gray-500">{t('class.assigned')}</div>
                             </div>
                           </div>
                           <Button
@@ -374,7 +374,7 @@ export function ClassFactory({ onNext, onBack }: StepProps) {
                               onClick={() => setSelectedClassId(cls.id)}
                             >
                               <User className="w-4 h-4 mr-2" />
-                              选择班主任
+                              {t('class.select_form_teacher')}
                             </Button>
                           </DialogTrigger>
                           <DialogContent>

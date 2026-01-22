@@ -18,7 +18,7 @@ import type { Subject, Teacher, Room } from '@/lib/api'
 import * as XLSX from 'xlsx'
 import { useTranslation } from 'react-i18next'
 
-export function ResourceLibrary({ onNext, onBack }: StepProps) {
+export function TeachingResourceCreation({ onNext, onBack }: StepProps) {
   const { t } = useTranslation()
   // Loading states
   const [loading, setLoading] = useState(true)

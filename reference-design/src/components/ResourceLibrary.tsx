@@ -36,7 +36,7 @@ interface Room {
 const WEEKDAYS = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
 const PERIODS = Array.from({ length: 8 }, (_, i) => i + 1);
 
-export function ResourceLibrary({ onNext, onBack }: { onNext?: () => void; onBack?: () => void }) {
+export function TeachingResourceCreation({ onNext, onBack }: { onNext?: () => void; onBack?: () => void }) {
   // Subjects
   const [subjects, setSubjects] = useState<Subject[]>([
     { id: '1', name: '数学', shortName: 'MAT', color: '#8B5CF6', requiresLab: false },

@@ -9,8 +9,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import type { StepProps } from '@/types/common'
 import { subjects as subjectsApi, teachers as teachersApi, classes as classesApi, assignments as assignmentsApi, disciplines as disciplinesApi } from '@/lib/api'
 import type { Subject, Teacher, ClassRecord, Assignment, Discipline } from '@/lib/api'
+import { useTranslation } from 'react-i18next'
 
-export function AssignmentMatrix({ onNext, onBack }: StepProps) {
+export function TeacherAssignment({ onNext, onBack }: StepProps) {
+  const { t } = useTranslation()
   // Loading states
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -170,7 +172,7 @@ export function AssignmentMatrix({ onNext, onBack }: StepProps) {
       <div className="p-8 flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-gray-600">Loading assignments data...</p>
+          <p className="text-gray-600">{t('assignments.loading')}</p>
         </div>
       </div>
     )
@@ -181,7 +183,7 @@ export function AssignmentMatrix({ onNext, onBack }: StepProps) {
       <div className="p-8 flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <p className="text-red-600 mb-4">{error}</p>
-          <Button onClick={() => window.location.reload()}>Retry</Button>
+          <Button onClick={() => window.location.reload()}>{t('common.retry')}</Button>
         </div>
       </div>
     )
@@ -190,20 +192,20 @@ export function AssignmentMatrix({ onNext, onBack }: StepProps) {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-semibold text-gray-900 mb-2">第五步：教师任课分配</h1>
-        <p className="text-gray-600">为每个班级的每门科目分配任课教师</p>
+        <h1 className="text-3xl font-semibold text-gray-900 mb-2">{t('assignments.step_title_5')}</h1>
+        <p className="text-gray-600">{t('assignments.step_desc_5')}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Left Side - Stats and Actions */}
         <div className="lg:col-span-1 space-y-6">
           <Card className="p-6 bg-white border border-gray-200">
-            <h3 className="font-semibold text-gray-900 mb-4">分配进度</h3>
+            <h3 className="font-semibold text-gray-900 mb-4">{t('assignments.distribution_progress')}</h3>
             
             <div className="space-y-4">
               <div>
                 <div className="flex items-center justify-between mb-2 text-sm">
-                  <span className="text-gray-600">已分配</span>
+                  <span className="text-gray-600">{t('assignments.assigned')}</span>
                   <span className="font-medium text-gray-900">{stats.assigned} / {stats.total}</span>
                 </div>
                 <Progress value={stats.percentage} className="h-2" />
@@ -211,14 +213,14 @@ export function AssignmentMatrix({ onNext, onBack }: StepProps) {
 
               <div className="text-center py-4">
                 <div className="text-4xl font-bold text-primary">{stats.percentage}%</div>
-                <div className="text-sm text-gray-600 mt-1">完成率</div>
+                <div className="text-sm text-gray-600 mt-1">{t('assignments.completion_rate')}</div>
               </div>
 
               {stats.percentage === 100 ? (
                 <div className="p-3 bg-green-50 rounded-lg border border-green-200">
                   <div className="flex items-center gap-2 text-green-800">
                     <CheckCircle2 className="w-5 h-5" />
-                    <span className="text-sm font-medium">所有任课已分配完成</span>
+                    <span className="text-sm font-medium">{t('assignments.all_assigned')}</span>
                   </div>
                 </div>
               ) : (
@@ -227,15 +229,15 @@ export function AssignmentMatrix({ onNext, onBack }: StepProps) {
                   className="w-full bg-primary hover:bg-purple-700"
                 >
                   <Wand2 className="w-4 h-4 mr-2" />
-                  一键自动分配
+                  {t('assignments.auto_assign_btn')}
                 </Button>
               )}
             </div>
           </Card>
 
           <Card className="p-6 bg-white border border-gray-200">
-            <h3 className="font-semibold text-gray-900 mb-4">教师负载状态</h3>
-            <p className="text-xs text-gray-500 mb-3">按负载排序 (高 → 低)，满载 25 节</p>
+            <h3 className="font-semibold text-gray-900 mb-4">{t('assignments.teacher_load_status')}</h3>
+            <p className="text-xs text-gray-500 mb-3">{t('assignments.load_sort_hint')}</p>
             
             <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
               {[...teachers]
@@ -249,7 +251,7 @@ export function AssignmentMatrix({ onNext, onBack }: StepProps) {
                     <div key={teacher.id} className="text-sm">
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-gray-700">{teacher.name}</span>
-                        <span className="text-gray-500">{totalPeriods}/{maxLoad}节 ({classCount}班)</span>
+                        <span className="text-gray-500">{t('assignments.load_stat', { current: totalPeriods, max: maxLoad, count: classCount })}</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
                         <div
@@ -284,7 +286,7 @@ export function AssignmentMatrix({ onNext, onBack }: StepProps) {
                       <thead>
                         <tr>
                           <th className="p-3 text-left text-sm font-medium text-gray-700 bg-gray-50 border border-gray-200">
-                            班级 / 科目
+                            {t('assignments.class_subject')}
                           </th>
                           {subjects.map((subject) => (
                             <th key={subject.id} className="p-3 text-center text-sm font-medium text-gray-700 bg-gray-50 border border-gray-200">
@@ -357,7 +359,7 @@ export function AssignmentMatrix({ onNext, onBack }: StepProps) {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              选择任课教师 - {classes.find(c => c.id === selectedCell?.classId)?.name} {subjects.find(s => s.id === selectedCell?.subjectId)?.name}
+              {t('assignments.select_teacher_title', { class: classes.find(c => c.id === selectedCell?.classId)?.name, subject: subjects.find(s => s.id === selectedCell?.subjectId)?.name })}
             </DialogTitle>
           </DialogHeader>
           <div className="py-4 space-y-2 max-h-[400px] overflow-y-auto">
@@ -397,12 +399,12 @@ export function AssignmentMatrix({ onNext, onBack }: StepProps) {
                     </div>
                     <div className="text-left">
                       <div className="font-medium text-gray-900">{teacher.name}</div>
-                      <div className="text-sm text-gray-600">{teacher.expand?.subject?.name || 'Unknown'}</div>
+                      <div className="text-sm text-gray-600">{teacher.expand?.subject?.name || t('class.unknown_subject')}</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="text-right text-sm">
-                      <div className="text-gray-600">{computedLoad}/{maxLoad}节</div>
+                      <div className="text-gray-600">{teacherAssignments.length > 0 && t('assignments.load_stat', { current: computedLoad, max: maxLoad, count: teacherAssignments.length })}</div>
                     </div>
                     <Badge
                       className={`text-xs ${
@@ -411,7 +413,7 @@ export function AssignmentMatrix({ onNext, onBack }: StepProps) {
                         'bg-red-50 text-red-700 border-red-200'
                       }`}
                     >
-                      {loadPercentage < 60 ? '推荐' : loadPercentage < 85 ? '适中' : '满载'}
+                      {loadPercentage < 60 ? t('assignments.recommend') : loadPercentage < 85 ? t('assignments.moderate') : t('assignments.full')}
                     </Badge>
                   </div>
                 </button>
@@ -420,7 +422,7 @@ export function AssignmentMatrix({ onNext, onBack }: StepProps) {
             
             {selectedCell && getTeachersForSubject(selectedCell.subjectId).length === 0 && (
               <div className="text-center py-8 text-gray-500">
-                <p>没有教授该科目的教师</p>
+                <p>{t('assignments.no_teachers_for_subject')}</p>
               </div>
             )}
           </div>
@@ -429,10 +431,10 @@ export function AssignmentMatrix({ onNext, onBack }: StepProps) {
 
       <div className="mt-8 flex justify-between items-center">
         <Button variant="outline" onClick={onBack}>
-          上一步
+          {t('common.prev')}
         </Button>
         <Button className="bg-primary hover:bg-purple-700" onClick={onNext}>
-          确认分配，下一步
+          {t('common.confirm_next')}
         </Button>
       </div>
     </div>

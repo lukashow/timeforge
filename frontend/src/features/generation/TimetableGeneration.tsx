@@ -17,7 +17,7 @@ const presetRules: OptimizationRule[] = [
   { id: '4', labelKey: 'generation.rule4_label', descriptionKey: 'generation.rule4_desc', enabled: true, type: 'preset' },
 ]
 
-export function GenerationTower({ onNext, onBack }: StepProps) {
+export function TimetableGeneration({ onNext, onBack }: StepProps) {
   const { t } = useTranslation()
   const [rules, setRules] = useState<OptimizationRule[]>(presetRules)
   const [isGenerating, setIsGenerating] = useState(false)
@@ -200,7 +200,7 @@ export function GenerationTower({ onNext, onBack }: StepProps) {
           <Card className="p-6 bg-white border border-gray-200">
             <div className="flex items-center gap-2 mb-6">
               <Zap className="w-5 h-5 text-primary" />
-              <h3 className="text-lg font-semibold text-gray-900">排课引擎</h3>
+              <h3 className="text-lg font-semibold text-gray-900">{t('generation.engine_title')}</h3>
             </div>
 
             {!isGenerating && !generationComplete && (
@@ -208,11 +208,11 @@ export function GenerationTower({ onNext, onBack }: StepProps) {
                 <div className="w-24 h-24 mx-auto mb-6 bg-purple-100 rounded-full flex items-center justify-center">
                   <Zap className="w-12 h-12 text-primary" />
                 </div>
-                <h4 className="text-xl font-semibold text-gray-900 mb-2">准备就绪</h4>
-                <p className="text-gray-600 mb-6">已配置 {enabledRulesCount} 条优化规则，点击开始生成课表</p>
+                <h4 className="text-xl font-semibold text-gray-900 mb-2">{t('generation.ready')}</h4>
+                <p className="text-gray-600 mb-6">{t('generation.ready_desc', { count: enabledRulesCount })}</p>
                 <Button onClick={startGeneration} size="lg" className="bg-primary hover:bg-purple-700">
                   <Play className="w-5 h-5 mr-2" />
-                  开始生成
+                  {t('generation.start_btn')}
                 </Button>
               </div>
             )}
@@ -222,20 +222,20 @@ export function GenerationTower({ onNext, onBack }: StepProps) {
                 <div className="w-24 h-24 mx-auto mb-6 bg-purple-100 rounded-full flex items-center justify-center">
                   <Loader2 className="w-12 h-12 text-primary animate-spin" />
                 </div>
-                <h4 className="text-xl font-semibold text-gray-900 mb-4">正在生成课表...</h4>
+                <h4 className="text-xl font-semibold text-gray-900 mb-4">{t('generation.generating')}</h4>
                 <div className="flex items-center justify-center gap-2 mb-4">
                   <Clock className="w-5 h-5 text-gray-500" />
-                  <span className="text-gray-600">已用时: {formatTime(elapsedTime)}</span>
+                  <span className="text-gray-600">{t('generation.elapsed_time')} {formatTime(elapsedTime)}</span>
                   {estimatedTime && (
-                    <span className="text-gray-400">/ 预计 ~{formatTime(estimatedTime)}</span>
+                    <span className="text-gray-400">{t('generation.estimated_time')} {formatTime(estimatedTime)}</span>
                   )}
                 </div>
                 {problemSize && (
                   <p className="text-sm text-gray-500">
-                    {problemSize.classes}班级 × {problemSize.subjects}科目 × {problemSize.days}天 × {problemSize.periods}节
+                    {t('generation.problem_size', { classes: problemSize.classes, subjects: problemSize.subjects, days: problemSize.days, periods: problemSize.periods })}
                   </p>
                 )}
-                <p className="text-sm text-gray-500 mt-2">正在应用 {enabledRulesCount} 条优化规则</p>
+                <p className="text-sm text-gray-500 mt-2">{t('generation.applying_rules', { count: enabledRulesCount })}</p>
               </div>
             )}
 
@@ -262,11 +262,11 @@ export function GenerationTower({ onNext, onBack }: StepProps) {
                     <div>
                       <h4 className="text-xl font-semibold text-gray-900">
                         {result.conflicts.filter(c => c.severity === 'error').length === 0
-                          ? '生成成功！'
-                          : '生成完成，但存在问题'}
+                          ? t('generation.success_title')
+                          : t('generation.success_with_issues_title')}
                       </h4>
                       <p className="text-gray-600">
-                        成功率 {result.successRate}% · 共 {result.totalPeriods} 节课
+                        {t('generation.success_summary', { rate: result.successRate, total: result.totalPeriods })}
                       </p>
                     </div>
                   </div>
@@ -276,22 +276,22 @@ export function GenerationTower({ onNext, onBack }: StepProps) {
                 <div className="grid grid-cols-3 gap-4 mb-6">
                   <Card className="p-4 bg-gray-50 border border-gray-200 text-center">
                     <div className="text-3xl font-bold text-primary">{result.successRate}%</div>
-                    <div className="text-sm text-gray-600">成功率</div>
+                    <div className="text-sm text-gray-600">{t('generation.stat_success_rate')}</div>
                   </Card>
                   <Card className="p-4 bg-gray-50 border border-gray-200 text-center">
                     <div className="text-3xl font-bold text-gray-900">{result.totalPeriods}</div>
-                    <div className="text-sm text-gray-600">总节数</div>
+                    <div className="text-sm text-gray-600">{t('generation.stat_total_periods')}</div>
                   </Card>
                   <Card className="p-4 bg-gray-50 border border-gray-200 text-center">
                     <div className="text-3xl font-bold text-orange-600">{result.conflicts.length}</div>
-                    <div className="text-sm text-gray-600">待处理</div>
+                    <div className="text-sm text-gray-600">{t('generation.stat_pending_issues')}</div>
                   </Card>
                 </div>
 
                 {/* Conflicts List */}
                 {result.conflicts.length > 0 && (
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-4">冲突详情</h4>
+                    <h4 className="font-semibold text-gray-900 mb-4">{t('generation.conflicts_details')}</h4>
                     <div className="space-y-3">
                       {result.conflicts.map((conflict) => (
                         <div
@@ -335,7 +335,7 @@ export function GenerationTower({ onNext, onBack }: StepProps) {
                 <div className="mt-6 flex justify-center">
                   <Button onClick={regenerate} variant="outline" className="text-primary border-primary hover:bg-purple-50">
                     <RotateCcw className="w-4 h-4 mr-2" />
-                    重新生成
+                    {t('generation.regenerate')}
                   </Button>
                 </div>
               </div>
@@ -353,7 +353,7 @@ export function GenerationTower({ onNext, onBack }: StepProps) {
           onClick={onNext}
           disabled={!generationComplete}
         >
-          查看课表，下一步
+          {t('generation.view_timetable_next')}
         </Button>
       </div>
     </div>

@@ -22,7 +22,7 @@ interface Conflict {
   severity: 'error' | 'warning';
 }
 
-export function GenerationTower({ onNext, onBack }: { onNext?: () => void; onBack?: () => void }) {
+export function TimetableGeneration({ onNext, onBack }: { onNext?: () => void; onBack?: () => void }) {
   const [rules, setRules] = useState<OptimizationRule[]>([
     { id: '1', label: '减少老师空窗期', description: '尽量让老师的课程连续排列', enabled: true, type: 'preset' },
     { id: '2', label: '理科课不排在下午', description: '物理、化学优先排在上午', enabled: true, type: 'preset' },
