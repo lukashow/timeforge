@@ -2,10 +2,11 @@
   "name": "lavapunk-root",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"./backend/pocketbase/pocketbase serve\" \"cd backend && bun dev\" \"cd frontend && bun dev\"",
+    "dev": "concurrently -k -n \"PB,BE,FE\" -c \"blue,magenta,cyan\" \"./backend/pocketbase/pocketbase serve\" \"wait-on tcp:8090 && cd backend && bun dev\" \"wait-on tcp:3000 && cd frontend && bun dev\"",
     "install": "cd backend && bun install && cd ../frontend && bun install"
   },
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "wait-on": "^8.0.0"
   }
 }
