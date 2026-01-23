@@ -140,7 +140,7 @@ export function LoginPage() {
                 {t('auth.logging_in', '登录中...')}
               </>
             ) : (
-              t('auth.login', '登 录')
+              t('auth.login', '登录')
             )}
           </Button>
         </form>

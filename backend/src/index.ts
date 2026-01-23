@@ -25,9 +25,8 @@ app.use(errorHandler);
 
 // Start server
 app.listen(config.port, () => {
-  console.log(`🚀 Server running on http://localhost:${config.port}`);
-  console.log(`📦 PocketBase URL: ${config.pocketbaseUrl}`);
-  console.log(`🔧 Environment: ${config.isDev ? "development" : "production"}`);
+  console.log(`Server running on http://localhost:${config.port}`);
+  console.log(`Environment: ${config.isDev ? "development" : "production"}`);
 });
 
 export default app;

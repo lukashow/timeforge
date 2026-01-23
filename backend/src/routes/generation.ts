@@ -264,8 +264,7 @@ function inputToMiniZincData(input: TimetableInput): Record<string, unknown> {
  */
 function estimateSolveTime(input: TimetableInput): number {
   const complexity = input.numClasses * input.numSubjects * input.numDays * input.numPeriodsPerDay;
-  // Rough estimate: 1ms per 10 complexity units, minimum 5 seconds
-  return Math.max(5000, complexity / 10);
+  return Math.max(5000, complexity / 2);
 }
 
 // ============ ROUTES ============
@@ -413,7 +412,6 @@ router.post("/generate", async (req: Request, res: Response) => {
                 is_free: false,
                 static_name: sc.name,
               }, { requestKey: null });
-              console.log(`Saved static course: class ${sc.classIndex}, day ${sc.day + 1}, period ${sc.period}: ${sc.name}`);
             } catch (err) {
               console.error(`Failed to save static course for class ${sc.classIndex}:`, err);
             }

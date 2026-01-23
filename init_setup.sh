@@ -127,7 +127,6 @@ else
     echo -e "PocketBase status: ${YELLOW}Missing or Corrupted${NC}"
     
     install_pocketbase() {
-        # ... (Existing installation logic) ...
         ARCH=$(uname -m)
         case $ARCH in
             x86_64) PB_ARCH="amd64" ;;
@@ -167,10 +166,10 @@ if [ ! -d "$OR_TOOLS_DIR" ]; then
      exit 1
 fi
 
-VENV_DIR="$OR_TOOLS_DIR/venv"
+VENV_DIR="$OR_TOOLS_DIR/.venv"
 
 if [ -d "$VENV_DIR" ]; then
-    echo -e "Virtual Env:       ${GREEN}Found${NC}"
+    echo -e "Virtual Environment:       ${GREEN}Found${NC}"
 else
     echo -n "Creating Virtual Config... "
     python3 -m venv "$VENV_DIR" &

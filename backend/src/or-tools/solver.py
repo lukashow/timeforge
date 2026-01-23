@@ -121,7 +121,6 @@ def solve_timetable(input_data: dict) -> dict:
         # The frontend will overlay static course names
         if 0 <= c < num_classes and 0 <= d < num_days and 0 <= p < num_periods_per_day:
             model.Add(timetable[c, d, p] == 0)  # Block this slot from being scheduled
-            print(f"Static course blocked: class {c}, day {d}, period {p}: {sc['name']}")
     
     # ============ CONSTRAINT 4: Max 2 Per Day ============
     # A subject can appear at most 2 times per day

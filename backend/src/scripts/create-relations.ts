@@ -10,10 +10,10 @@ const ADMIN_EMAIL = "admin@timetable.school.org";
 const ADMIN_PASSWORD = "timetable123";
 
 async function createRelationCollections() {
-  console.log("🔧 Creating collections with relations...\n");
+  console.log("Creating collections with relations...\n");
 
   await pb.collection("_superusers").authWithPassword(ADMIN_EMAIL, ADMIN_PASSWORD);
-  console.log("✅ Authenticated\n");
+  console.log("Authenticated\n");
 
   // Get existing collection IDs
   const subjects = await pb.collections.getOne("subjects");
@@ -49,7 +49,7 @@ async function createRelationCollections() {
       updateRule: "",
       deleteRule: "",
     });
-    console.log("✅ Created teachers, ID:", created.id);
+    console.log("Created teachers, ID:", created.id);
 
     // Create classes
     const classes = await pb.collections.create({
@@ -87,7 +87,7 @@ async function createRelationCollections() {
       updateRule: "",
       deleteRule: "",
     });
-    console.log("✅ Created classes, ID:", classes.id);
+    console.log("Created classes, ID:", classes.id);
 
     // Create assignments
     const assignments = await pb.collections.create({
@@ -136,17 +136,17 @@ async function createRelationCollections() {
       updateRule: "",
       deleteRule: "",
     });
-    console.log("✅ Created assignments, ID:", assignments.id);
+    console.log("Created assignments, ID:", assignments.id);
 
   } catch (error: unknown) {
     const err = error as { message?: string; response?: { data?: unknown; message?: string } };
-    console.error("❌ Error:", err.message);
+    console.error("Error:", err.message);
     if (err.response) {
       console.error("Response:", JSON.stringify(err.response, null, 2));
     }
   }
 
-  console.log("\n🎉 Done!");
+  console.log("\nDone!");
 }
 
 createRelationCollections();

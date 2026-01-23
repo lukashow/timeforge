@@ -10,15 +10,15 @@ async function updateTimeGridSchema() {
   try {
     // Authenticate as admin
     await pb.admins.authWithPassword('admin@timetable.school.org', 'timetable123');
-    console.log('✅ Authenticated as admin');
+    console.log('Authenticated as admin');
 
     // Get the time_grid collection
     let collection;
     try {
       collection = await pb.collections.getOne('time_grid');
-      console.log('📋 Found time_grid collection:', collection.id);
+      console.log('Found time_grid collection:', collection.id);
     } catch {
-      console.log('❌ time_grid collection not found');
+      console.log('time_grid collection not found');
       return;
     }
 
@@ -83,22 +83,22 @@ async function updateTimeGridSchema() {
       },
     ];
 
-    console.log('🔄 Updating collection schema...');
+    console.log('Updating collection schema...');
     
     // Update collection with full schema
     await pb.collections.update(collection.id, {
       schema: fullSchema,
     });
 
-    console.log('✅ Successfully updated time_grid schema!');
+    console.log('Successfully updated time_grid schema!');
 
     // Verify the update
     const updatedCollection = await pb.collections.getOne('time_grid');
     const fieldNames = (updatedCollection.schema || []).map((f: any) => f.name);
-    console.log('📋 Updated fields:', fieldNames);
+    console.log('Updated fields:', fieldNames);
 
   } catch (error) {
-    console.error('❌ Error:', error);
+    console.error('Error:', error);
     process.exit(1);
   }
 }

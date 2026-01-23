@@ -14,14 +14,14 @@ const ADMIN_EMAIL = "admin@timetable.school.org";
 const ADMIN_PASSWORD = "timetable123";
 
 async function updateRules() {
-  console.log("🔧 Updating PocketBase collection rules...\n");
+  console.log("Updating PocketBase collection rules...");
 
   try {
     // Authenticate as admin
     await pb.collection("_superusers").authWithPassword(ADMIN_EMAIL, ADMIN_PASSWORD);
-    console.log("✅ Authenticated as admin\n");
+    console.log("Authenticated as admin");
   } catch (error) {
-    console.error("❌ Failed to authenticate:", error);
+    console.error("Failed to authenticate:", error);
     return;
   }
 
@@ -49,14 +49,14 @@ async function updateRules() {
         deleteRule: "",    // Allow public delete
       });
 
-      console.log(`✅ Updated rules for: ${collectionName}`);
+      console.log(`Updated rules for: ${collectionName}`);
     } catch (error: unknown) {
       const err = error as { message?: string };
-      console.error(`❌ Failed to update ${collectionName}:`, err.message || error);
+      console.error(`Failed to update ${collectionName}:`, err.message || error);
     }
   }
 
-  console.log("\n🎉 Rules update complete!");
+  console.log("\nRules update complete!");
 }
 
 updateRules();

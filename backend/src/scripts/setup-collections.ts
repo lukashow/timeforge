@@ -21,14 +21,14 @@ interface FieldDef {
 }
 
 async function createCollections() {
-  console.log("🔧 Setting up PocketBase collections...\n");
+  console.log("Setting up PocketBase collections...");
 
   try {
     // Authenticate as admin
     await pb.collection("_superusers").authWithPassword(ADMIN_EMAIL, ADMIN_PASSWORD);
-    console.log("✅ Authenticated as admin\n");
+    console.log("Authenticated as admin");
   } catch (error) {
-    console.error("❌ Failed to authenticate:", error);
+    console.error("Failed to authenticate:", error);
     return;
   }
 
@@ -39,7 +39,7 @@ async function createCollections() {
     try {
       const collection = await pb.collections.getOne(name);
       await pb.collections.delete(collection.id);
-      console.log(`🗑️  Deleted existing collection: ${name}`);
+      console.log(`Deleted existing collection: ${name}`);
     } catch {
       // Collection doesn't exist, skip
     }
@@ -106,10 +106,10 @@ async function createCollections() {
       });
 
       createdCollections[collectionDef.name] = created.id;
-      console.log(`✅ Created collection: ${collectionDef.name}`);
+      console.log(`Created collection: ${collectionDef.name}`);
     } catch (error: unknown) {
       const err = error as { message?: string; response?: { data?: unknown } };
-      console.error(`❌ Failed to create ${collectionDef.name}:`, err.message || error);
+      console.error(`Failed to create ${collectionDef.name}:`, err.message || error);
       if (err.response?.data) {
         console.error("   Details:", JSON.stringify(err.response.data));
       }
@@ -134,10 +134,10 @@ async function createCollections() {
       deleteRule: "",
     });
     createdCollections["teachers"] = created.id;
-    console.log("✅ Created collection: teachers");
+    console.log("Created collection: teachers");
   } catch (error: unknown) {
     const err = error as { message?: string };
-    console.error("❌ Failed to create teachers:", err.message || error);
+    console.error("Failed to create teachers:", err.message || error);
   }
 
   // Create classes collection (needs disciplines and teachers relations)
@@ -158,10 +158,10 @@ async function createCollections() {
       deleteRule: "",
     });
     createdCollections["classes"] = created.id;
-    console.log("✅ Created collection: classes");
+    console.log("Created collection: classes");
   } catch (error: unknown) {
     const err = error as { message?: string };
-    console.error("❌ Failed to create classes:", err.message || error);
+    console.error("Failed to create classes:", err.message || error);
   }
 
   // Create assignments collection (needs classes, subjects, teachers relations)
@@ -181,14 +181,14 @@ async function createCollections() {
       deleteRule: "",
     });
     createdCollections["assignments"] = created.id;
-    console.log("✅ Created collection: assignments");
+    console.log("Created collection: assignments");
   } catch (error: unknown) {
     const err = error as { message?: string };
-    console.error("❌ Failed to create assignments:", err.message || error);
+    console.error("Failed to create assignments:", err.message || error);
   }
 
-  console.log("\n🎉 Setup complete!");
-  console.log("\nCollection IDs:", createdCollections);
+  console.log("Setup complete!");
+  console.log("Collection IDs:", createdCollections);
 }
 
 createCollections();
