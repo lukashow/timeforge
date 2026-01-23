@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently -k -n \"PB,BE,FE\" -c \"blue,magenta,cyan\" \"./backend/pocketbase/pocketbase serve\" \"wait-on tcp:8090 && cd backend && bun dev\" \"wait-on tcp:3001 && cd frontend && bun dev\"",
+    "init": "bash init_setup.sh",
     "install": "cd backend && bun install && cd ../frontend && bun install"
   },
   "devDependencies": {

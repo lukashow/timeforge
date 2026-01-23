@@ -89,8 +89,11 @@ export function AppLayout() {
         {/* Logo */}
         <div className="h-20 flex items-center px-8 border-b border-border">
           <Link to="/" className="flex items-center gap-3">
-            <Icon icon="tabler:clock" className="w-8 h-8 text-primary" />
-            <span className="font-bold text-2xl text-primary tracking-tight">{t('common.brand')}</span>
+            <img 
+              src="/timeforge_logo.svg" 
+              alt={t('common.brand')} 
+              className="h-18 w-auto"
+            />
           </Link>
         </div>
 
