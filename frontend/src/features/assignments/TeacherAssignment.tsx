@@ -310,14 +310,14 @@ export function TeacherAssignment({ onNext, onBack }: StepProps) {
                               return (
                                 <td
                                   key={`${cls.id}-${subject.id}`}
-                                  className="p-2 text-center border border-gray-200"
+                                  className="p-1 text-center border border-gray-200"
                                 >
                                   <button
                                     onClick={() => {
                                       setSelectedCell({ classId: cls.id, subjectId: subject.id })
                                       setShowTeacherDialog(true)
                                     }}
-                                    className={`w-full p-2 rounded-lg transition-all border ${
+                                    className={`w-full p-2 rounded-sm transition-all border ${
                                       teacher
                                         ? workloadColor
                                         : 'bg-gray-50 border-dashed border-gray-300 hover:border-primary hover:bg-purple-50'
@@ -325,9 +325,6 @@ export function TeacherAssignment({ onNext, onBack }: StepProps) {
                                   >
                                     {teacher ? (
                                       <div className="flex items-center justify-center gap-1">
-                                        <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white text-xs">
-                                          {teacher.name[0]}
-                                        </div>
                                         <span className="text-xs">{teacher.name}</span>
                                       </div>
                                     ) : (

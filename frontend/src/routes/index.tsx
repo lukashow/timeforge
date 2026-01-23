@@ -23,50 +23,62 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <DashboardPage />,
+        handle: { titleKey: 'menu.dashboard' }
       },
       {
         path: 'wizard',
         element: <WizardPage />,
+        handle: { titleKey: 'menu.wizard' }
       },
       {
         path: 'subjects',
         element: <SubjectsPage />,
+        handle: { titleKey: 'menu.subjects' }
       },
       {
         path: 'teachers',
         element: <TeachersPage />,
+        handle: { titleKey: 'menu.teachers' }
       },
       {
         path: 'classrooms',
         element: <ClassroomsPage />,
+        handle: { titleKey: 'menu.classrooms' }
       },
       {
         path: 'disciplines',
         element: <DisciplinesPage />,
+        handle: { titleKey: 'menu.disciplines' }
       },
       {
         path: 'assignments',
         element: <AssignmentsPage />,
+        handle: { titleKey: 'menu.assignments' }
       },
       {
         path: 'timetable-structure',
         element: <TimetableStructurePage />,
+        handle: { titleKey: 'menu.timetable_structure' }
       },
       {
         path: 'generation',
         element: <GenerationPage />,
+        handle: { titleKey: 'menu.generation' }
       },
       {
         path: 'timetables',
         element: <TimetablesPage />,
+        handle: { titleKey: 'menu.timetables' }
       },
       {
         path: 'export',
         element: <ExportPage />,
+        handle: { titleKey: 'menu.export' }
       },
       {
         path: 'users',
         element: <UsersPage />,
+        handle: { titleKey: 'menu.users' }
       },
       {
         path: '*',

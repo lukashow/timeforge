@@ -3,6 +3,14 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { Icon } from '@iconify/react'
 import { Loader2 } from 'lucide-react'
 import { timetable as timetableApi, classes as classesApi } from '@/lib/api'
@@ -14,6 +22,7 @@ export function GenerationPage() {
   const [generating, setGenerating] = useState(false)
   const [classCount, setClassCount] = useState(0)
   const [hasTimetables, setHasTimetables] = useState(false)
+  const [showOverwriteDialog, setShowOverwriteDialog] = useState(false)
 
   useEffect(() => {
     loadStats()
@@ -35,7 +44,16 @@ export function GenerationPage() {
     }
   }
 
-  const handleGenerate = async () => {
+  const handleGenerateClick = () => {
+    if (hasTimetables) {
+      setShowOverwriteDialog(true)
+    } else {
+      confirmGenerate()
+    }
+  }
+
+  const confirmGenerate = async () => {
+    setShowOverwriteDialog(false)
     try {
       setGenerating(true)
       await timetableApi.generate([]) // Empty rules array
@@ -82,7 +100,9 @@ export function GenerationPage() {
               <Icon icon="tabler:table" className="w-5 h-5 text-accent" />
             </div>
             <div>
-              <div className="text-2xl font-bold text-foreground">{hasTimetables ? '✓' : '-'}</div>
+              <div className="text-xl font-bold text-foreground">
+                {hasTimetables ? t('pages.generated', '已生成') : t('pages.not_generated', '未生成')}
+              </div>
               <div className="text-sm text-muted-foreground">{t('pages.status', '状态')}</div>
             </div>
           </div>
@@ -103,7 +123,7 @@ export function GenerationPage() {
           </div>
           <Button 
             size="lg" 
-            onClick={handleGenerate} 
+            onClick={handleGenerateClick} 
             disabled={generating || classCount === 0}
             className="min-w-[120px]"
           >
@@ -168,6 +188,25 @@ export function GenerationPage() {
           </Button>
         </div>
       </Card>
+
+      <Dialog open={showOverwriteDialog} onOpenChange={setShowOverwriteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('pages.overwrite_title', '警告：现有数据')}</DialogTitle>
+            <DialogDescription>
+              {t('pages.overwrite_desc', '生成新课表将覆盖现有课表。此操作无法撤销。您确定要继续吗？')}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowOverwriteDialog(false)}>
+              {t('pages.cancel', '取消')}
+            </Button>
+            <Button onClick={confirmGenerate}>
+              {t('pages.confirm_overwrite', '确认生成')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

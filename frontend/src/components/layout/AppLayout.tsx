@@ -1,11 +1,14 @@
 import { Icon } from '@iconify/react'
 import { Input } from '@/components/ui/input'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Outlet, Link, useLocation } from 'react-router-dom'
+import { Outlet, Link, useLocation, useMatches } from 'react-router-dom'
+import { useEffect } from 'react'
 
 import '@/i18n'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/contexts/AuthContext'
+
+
 
 // Menu item types
 interface MenuItem {
@@ -64,23 +67,22 @@ export function AppLayout() {
   const { t, i18n } = useTranslation()
   const { user, logout } = useAuth()
   const location = useLocation()
+  const matches = useMatches()
 
   const toggleLanguage = () => {
     const next = i18n.language === 'zh' ? 'en' : 'zh'
     i18n.changeLanguage(next)
   }
 
-  // Get current page title based on active route
-  const getCurrentPageTitle = () => {
-    for (const section of menuSections) {
-      for (const item of section.items) {
-        if (item.path === location.pathname) {
-          return t(item.labelKey)
-        }
-      }
-    }
-    return t('menu.dashboard')
-  }
+  // Get current page title based on active route handle
+  const currentHandle = matches.find((match) => (match.handle as any)?.titleKey) as any
+  const pageTitleKey = currentHandle?.handle?.titleKey || 'menu.dashboard'
+  const pageTitle = t(pageTitleKey)
+
+  // Update document title
+  useEffect(() => {
+    document.title = `${pageTitle} - TimeForge`
+  }, [pageTitle])
 
   return (
     <div className="flex h-screen bg-background font-sans text-foreground">
@@ -145,7 +147,7 @@ export function AppLayout() {
         <header className="h-20 bg-background/80 backdrop-blur-md px-8 flex items-center justify-between sticky top-0 z-10">
           {/* Header Title */}
           <h2 className="text-xl font-semibold text-foreground hidden md:block">
-            {getCurrentPageTitle()}
+            {pageTitle}
           </h2>
 
           <div className="flex items-center gap-6 ml-auto">
