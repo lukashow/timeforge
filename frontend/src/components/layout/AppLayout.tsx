@@ -151,17 +151,6 @@ export function AppLayout() {
           </h2>
 
           <div className="flex items-center gap-6 ml-auto">
-            {/* Search */}
-             <div className="relative w-80 hidden md:block">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary">
-                <Icon icon="tabler:search" className="w-5 h-5" />
-              </div>
-              <Input
-                type="text"
-                placeholder={t('search.placeholder')}
-                className="pl-12 pr-4 h-12 bg-input border-none rounded-xl text-sm focus-visible:ring-1 focus-visible:ring-primary/50 placeholder:text-muted-foreground"
-              />
-            </div>
 
             {/* Actions */}
             <div className="flex items-center gap-3">
