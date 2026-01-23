@@ -17,6 +17,7 @@
     "section_scheduling": "排课",
     "section_admin": "系统管理"
   },
+
   "pages": {
     "subjects": "科目管理",
     "subjects_desc": "管理所有科目信息",
@@ -139,6 +140,7 @@
     "generate_now": "立即生成"
   },
   "common": {
+    "prev_step": "上一步",
     "prev": "上一步",
     "next": "下一步",
     "confirm": "确认",
@@ -345,7 +347,14 @@
     "view_timetable_next": "查看课表，下一步",
     "error_generic": "生成失败",
     "error_unknown": "发生未知错误",
-    "error_failed_with_msg": "生成失败: {{error}}"
+    "error_failed_with_msg": "生成失败: {{error}}",
+    "status": "状态",
+    "time": "耗时",
+    "optimization_score": "优化得分",
+    "overwrite_title": "警告：现有数据",
+    "overwrite_desc": "生成新课表将覆盖现有课表。此操作无法撤销。您确定要继续吗？",
+    "confirm_overwrite": "确认生成",
+    "cancel": "取消"
   },
   "weekdays": {
     "mon": "周一",

@@ -17,6 +17,7 @@
     "section_scheduling": "Scheduling",
     "section_admin": "Admin"
   },
+
   "pages": {
     "subjects": "Subjects Management",
     "subjects_desc": "Manage all subjects information",
@@ -58,6 +59,7 @@
     "excel_desc": "Export all class timetables to one Excel file",
     "view_before_export": "Want to preview before export?",
     "view_timetables": "View Timetables",
+    "go_to_timetables": "Go to Timetables",
     "generation": "Timetable Generation",
     "generation_desc": "Configure rules and generate smart timetables",
     "classes": "Classes",
@@ -140,6 +142,7 @@
     "generate_now": "Generate Now"
   },
   "common": {
+    "prev_step": "Previous Step",
     "prev": "Previous",
     "next": "Next",
     "confirm": "Confirm",
@@ -328,6 +331,7 @@
     "teacher_timetable": "Teacher Timetable",
     "export_excel": "Export Excel",
     "export_pdf": "Export PDF",
+    "free": "Free",
     "save_to_system": "Save to system",
     "generated": "Generated",
     "all_timetable_name": "Full School Timetable",
@@ -395,7 +399,14 @@
     "view_timetable_next": "View Timetable, Next",
     "error_generic": "Generation failed",
     "error_unknown": "Unknown error occurred",
-    "error_failed_with_msg": "Generation failed: {{error}}"
+    "error_failed_with_msg": "Generation failed: {{error}}",
+    "status": "Status",
+    "time": "Time",
+    "optimization_score": "Optimization Score",
+    "overwrite_title": "Warning: Existing Data",
+    "overwrite_desc": "Generating new timetables will overwrite existing ones. This action cannot be undone. Are you sure you want to proceed?",
+    "confirm_overwrite": "Confirm Generate",
+    "cancel": "Cancel"
   },
   "weekdays": {
     "mon": "Mon",

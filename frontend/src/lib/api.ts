@@ -271,6 +271,7 @@ export interface GenerationResult {
       solutions: number;
       failures: number;
       restarts: number;
+      score: number;
     };
     conflicts: { id: string; type: string; message: string }[];
     totalPeriods: number;

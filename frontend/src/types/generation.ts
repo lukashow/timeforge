@@ -20,4 +20,7 @@ export interface GenerationResult {
   successRate: number
   totalPeriods: number
   conflicts: Conflict[]
+  solveTimeMs?: number
+  score?: number
+  status?: string
 }

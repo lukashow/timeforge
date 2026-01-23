@@ -553,7 +553,7 @@ export function ExportPage() {
         className="p-8 border-dashed border-2 hover:border-primary/50 transition-all cursor-pointer flex flex-col items-center justify-center gap-4 group hover:bg-accent/5"
         onClick={() => navigate('/timetables')}
       >
-        <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform group-hover:bg-primary/20">
+        <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center transition-transform group-hover:bg-primary/20">
           <Icon icon="tabler:eye" className="w-8 h-8 text-primary" />
         </div>
         <div className="text-center">

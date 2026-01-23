@@ -150,6 +150,7 @@ export interface SolveStatistics {
   solutions: number;
   failures: number;
   restarts: number;
+  score?: number;
 }
 
 /**

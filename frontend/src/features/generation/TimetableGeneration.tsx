@@ -6,9 +6,17 @@ import { Play, RotateCcw, AlertTriangle, AlertCircle, CheckCircle2, Zap, Plus, I
 import { Badge } from '@/components/ui/badge'
 import type { OptimizationRule, GenerationResult } from '@/types/generation'
 import type { StepProps } from '@/types/common'
-import { generation } from '@/lib/api'
+import { generation, timetable } from '@/lib/api'
 import type { GenerationResult as APIGenerationResult, GenerationEstimate } from '@/lib/api'
 import { useTranslation } from 'react-i18next'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 const presetRules: OptimizationRule[] = [
   { id: '1', labelKey: 'generation.rule1_label', descriptionKey: 'generation.rule1_desc', enabled: true, type: 'preset' },
@@ -27,6 +35,8 @@ export function TimetableGeneration({ onNext, onBack }: StepProps) {
   const [elapsedTime, setElapsedTime] = useState(0)
   const [problemSize, setProblemSize] = useState<GenerationEstimate['problemSize'] | null>(null)
   const [, setError] = useState<string | null>(null)
+  const [showOverwriteWarning, setShowOverwriteWarning] = useState(false)
+  const [hasExistingTimetables, setHasExistingTimetables] = useState(false)
 
   const toggleRule = (ruleId: string) => {
     setRules(rules.map(rule =>
@@ -34,9 +44,10 @@ export function TimetableGeneration({ onNext, onBack }: StepProps) {
     ))
   }
 
-  // Fetch estimate on mount
+  // Fetch estimate and check existing timetables on mount
   useEffect(() => {
-    const fetchEstimate = async () => {
+    const initData = async () => {
+      // Fetch estimate
       try {
         const estimate = await generation.getEstimate()
         setEstimatedTime(estimate.estimatedTimeMs)
@@ -44,8 +55,21 @@ export function TimetableGeneration({ onNext, onBack }: StepProps) {
       } catch (err) {
         console.error('Failed to fetch estimate:', err)
       }
+
+      // Check existing timetables
+      try {
+        const latest = await timetable.getLatest()
+        console.log('Latest timetable check:', latest)
+        
+        if (latest && latest.entries && latest.entries.length > 0) {
+          console.log('Found existing timetables')
+          setHasExistingTimetables(true)
+        }
+      } catch (err) {
+        console.error('Failed to check existing timetables:', err)
+      }
     }
-    fetchEstimate()
+    initData()
   }, [])
 
   // Elapsed time counter during generation
@@ -68,19 +92,21 @@ export function TimetableGeneration({ onNext, onBack }: StepProps) {
     setResult(null)
     setError(null)
     setElapsedTime(0)
+    // Reset hasExistingTimetables as we are generating new ones
+    setHasExistingTimetables(false)
 
     try {
       // Map rules to flags - match new rule IDs
       const flags = {
-        NO_CONSECUTIVE_SAME_SUBJECT: rules.find(r => r.id === '1')?.enabled,          // 同一科目不在同一天连续出现
-        MAX_TEACHER_CONSECUTIVE_PERIODS: rules.find(r => r.id === '2')?.enabled ? 3 : 10, // 避免教师连续授课3个班级以上
-        DOUBLE_PERIOD_NO_RECESS: rules.find(r => r.id === '3')?.enabled,              // 双节不可跨过课间时间
-        MINIMIZE_TEACHER_GAPS: rules.find(r => r.id === '4')?.enabled,                // 减少教师在校时间
+        NO_CONSECUTIVE_SAME_SUBJECT: rules.find(r => r.id === '1')?.enabled,
+        MAX_TEACHER_CONSECUTIVE_PERIODS: rules.find(r => r.id === '2')?.enabled ? 3 : 10,
+        DOUBLE_PERIOD_NO_RECESS: rules.find(r => r.id === '3')?.enabled,
+        MINIMIZE_TEACHER_GAPS: rules.find(r => r.id === '4')?.enabled,
       }
 
       const response: APIGenerationResult = await generation.generate({ 
         flags,
-        timeoutMs: 120000 // 2 minute timeout
+        timeoutMs: 120000 
       })
 
       setIsGenerating(false)
@@ -90,6 +116,9 @@ export function TimetableGeneration({ onNext, onBack }: StepProps) {
         setResult({
           successRate: response.output.successRate,
           totalPeriods: response.output.totalPeriods,
+          solveTimeMs: response.output.statistics.solveTimeMs,
+          score: response.output.statistics.score,
+          status: response.output.status,
           conflicts: response.output.conflicts.map((c, idx) => ({
             id: String(idx),
             message: c.message,
@@ -141,15 +170,53 @@ export function TimetableGeneration({ onNext, onBack }: StepProps) {
 
   const enabledRulesCount = rules.filter(r => r.enabled).length
 
+  const handleStartGenerationClick = () => {
+    if (hasExistingTimetables) {
+      setShowOverwriteWarning(true)
+    } else {
+      startGeneration()
+    }
+  }
+
+  const handleRegenerateClick = () => {
+    setShowOverwriteWarning(true)
+  }
+
   return (
     <div className="p-8">
+      <Dialog open={showOverwriteWarning} onOpenChange={setShowOverwriteWarning}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center text-red-600 gap-2">
+              <AlertTriangle className="w-5 h-5" />
+              {t('generation.overwrite_title')}
+            </DialogTitle>
+            <DialogDescription className="pt-2">
+              <div className="bg-red-50 text-red-900 p-4 rounded-md border border-red-200 mb-2">
+                {t('generation.overwrite_desc')}
+              </div>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowOverwriteWarning(false)}>
+              {t('generation.cancel')}
+            </Button>
+            <Button variant="destructive" onClick={() => {
+              setShowOverwriteWarning(false)
+              regenerate()
+            }}>
+              {t('generation.confirm_overwrite')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <div className="mb-8">
         <h1 className="text-3xl font-semibold text-gray-900 mb-2">{t('generation.step_title_6')}</h1>
         <p className="text-gray-600">{t('generation.step_desc_6')}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Side - Rules Configuration */}
         <div className="lg:col-span-1 space-y-6">
           <Card className="p-6 bg-white border border-gray-200">
             <div className="flex items-center justify-between mb-6">
@@ -210,7 +277,7 @@ export function TimetableGeneration({ onNext, onBack }: StepProps) {
                 </div>
                 <h4 className="text-xl font-semibold text-gray-900 mb-2">{t('generation.ready')}</h4>
                 <p className="text-gray-600 mb-6">{t('generation.ready_desc', { count: enabledRulesCount })}</p>
-                <Button onClick={startGeneration} size="lg" className="bg-primary hover:bg-purple-700">
+                <Button onClick={handleStartGenerationClick} size="lg" className="bg-primary hover:bg-purple-700">
                   <Play className="w-5 h-5 mr-2" />
                   {t('generation.start_btn')}
                 </Button>
@@ -265,32 +332,40 @@ export function TimetableGeneration({ onNext, onBack }: StepProps) {
                           ? t('generation.success_title')
                           : t('generation.success_with_issues_title')}
                       </h4>
-                      <p className="text-gray-600">
-                        {t('generation.success_summary', { rate: result.successRate, total: result.totalPeriods })}
-                      </p>
+                      <div className="flex flex-wrap gap-4 mt-2">
+                        {/* Status Badge */}
+                        <Badge variant="outline" className={`
+                          capitalize
+                          ${result.status === 'optimal' || result.status === 'satisfied' 
+                            ? 'border-green-500 text-green-700 bg-green-50' 
+                            : 'border-orange-500 text-orange-700 bg-orange-50'}
+                        `}>
+                          {t('generation.status')}: {result.status || 'Unknown'}
+                        </Badge>
+                        
+                        {/* Time Badge */}
+                        {result.solveTimeMs && (
+                          <Badge variant="outline" className="border-blue-500 text-blue-700 bg-blue-50">
+                            <Clock className="w-3 h-3 mr-1" />
+                            {t('generation.time')}: {(result.solveTimeMs / 1000).toFixed(2)}s
+                          </Badge>
+                        )}
+
+                        {/* Efficiency/Score Badge (lower gaps is better) */}
+                        {result.score !== undefined && (
+                          <Badge variant="outline" className="border-purple-500 text-purple-700 bg-purple-50">
+                            <Zap className="w-3 h-3 mr-1" />
+                            {t('generation.optimization_score')}: {result.score} (Gaps)
+                          </Badge>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Stats Grid */}
-                <div className="grid grid-cols-3 gap-4 mb-6">
-                  <Card className="p-4 bg-gray-50 border border-gray-200 text-center">
-                    <div className="text-3xl font-bold text-primary">{result.successRate}%</div>
-                    <div className="text-sm text-gray-600">{t('generation.stat_success_rate')}</div>
-                  </Card>
-                  <Card className="p-4 bg-gray-50 border border-gray-200 text-center">
-                    <div className="text-3xl font-bold text-gray-900">{result.totalPeriods}</div>
-                    <div className="text-sm text-gray-600">{t('generation.stat_total_periods')}</div>
-                  </Card>
-                  <Card className="p-4 bg-gray-50 border border-gray-200 text-center">
-                    <div className="text-3xl font-bold text-orange-600">{result.conflicts.length}</div>
-                    <div className="text-sm text-gray-600">{t('generation.stat_pending_issues')}</div>
-                  </Card>
-                </div>
-
-                {/* Conflicts List */}
+                {/* Conflict List (if any) */}
                 {result.conflicts.length > 0 && (
-                  <div>
+                  <div className="mb-6">
                     <h4 className="font-semibold text-gray-900 mb-4">{t('generation.conflicts_details')}</h4>
                     <div className="space-y-3">
                       {result.conflicts.map((conflict) => (
@@ -333,7 +408,7 @@ export function TimetableGeneration({ onNext, onBack }: StepProps) {
 
                 {/* Regenerate Button */}
                 <div className="mt-6 flex justify-center">
-                  <Button onClick={regenerate} variant="outline" className="text-primary border-primary hover:bg-purple-50">
+                  <Button onClick={handleRegenerateClick} variant="outline" className="text-primary border-primary hover:bg-purple-50">
                     <RotateCcw className="w-4 h-4 mr-2" />
                     {t('generation.regenerate')}
                   </Button>
@@ -346,7 +421,7 @@ export function TimetableGeneration({ onNext, onBack }: StepProps) {
 
       <div className="mt-8 flex justify-between items-center">
         <Button variant="outline" onClick={onBack}>
-          上一步
+          {t('common.prev_step')}
         </Button>
         <Button
           className="bg-primary hover:bg-purple-700"

@@ -432,6 +432,7 @@ router.post("/generate", async (req: Request, res: Response) => {
         solutions: 1,
         failures: 0,
         restarts: 0,
+        score: solverResult.total_gaps || 0,
       },
       conflicts: [],
       totalPeriods: input.numClasses * input.numDays * input.numPeriodsPerDay,
