@@ -23,7 +23,7 @@ export function StepProgressBar({ currentStep, onStepClick }: StepProgressBarPro
       <div className="max-w-6xl mx-auto">
         <div className="relative">
           {/* Progress Line */}
-          <div className="absolute top-5 left-0 right-0 h-1 bg-muted rounded-full">
+          <div className="absolute top-5 left-[calc(100%/14)] right-[calc(100%/14)] h-1 bg-muted rounded-full">
             <div
               className="h-full bg-primary rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(138,86,172,0.5)]"
               style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}
@@ -31,7 +31,7 @@ export function StepProgressBar({ currentStep, onStepClick }: StepProgressBarPro
           </div>
 
           {/* Steps */}
-          <div className="relative flex justify-between">
+          <div className="relative grid grid-cols-7 w-full">
             {steps.map((step) => {
               const isCompleted = step.number < currentStep
               const isCurrent = step.number === currentStep
