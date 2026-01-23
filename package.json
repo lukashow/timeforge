@@ -1,5 +1,5 @@
 {
-  "name": "lavapunk-root",
+  "name": "timeforge-root",
   "private": true,
   "scripts": {
     "dev": "concurrently -k -n \"PB,BE,FE\" -c \"blue,magenta,cyan\" \"./backend/pocketbase/pocketbase serve\" \"wait-on tcp:8090 && cd backend && bun dev\" \"wait-on tcp:3001 && cd frontend && bun dev\"",
@@ -9,5 +9,10 @@
   "devDependencies": {
     "concurrently": "^9.1.2",
     "wait-on": "^8.0.0"
+  },
+  "module": "index.ts",
+  "type": "module",
+  "peerDependencies": {
+    "typescript": "^5"
   }
 }

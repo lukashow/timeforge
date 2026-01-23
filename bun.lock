@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "lavapunk-root",
+      "name": "timeforge-root",
       "devDependencies": {
         "concurrently": "^9.1.2",
         "wait-on": "^9.0.3",

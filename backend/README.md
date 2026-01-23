@@ -1,4 +1,4 @@
-# LavaPunk - School Timetable Scheduling System
+# TimeForge - School Timetable Scheduling System
 
 A comprehensive school timetable generation system with a multi-step wizard interface.
 
