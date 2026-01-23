@@ -39,7 +39,6 @@ export function ExportPage() {
   const [subjects, setSubjects] = useState<SubjectInfo[]>([])
   const [teachers, setTeachers] = useState<TeacherInfo[]>([])
   const [maxPeriods, setMaxPeriods] = useState(8)
-  const [breaks, setBreaks] = useState<{ afterPeriod: number; name: string; duration: number }[]>([])
   
   const [selectedClassId, setSelectedClassId] = useState<string>('')
   const [selectedTeacherId, setSelectedTeacherId] = useState<string>('')
@@ -58,7 +57,6 @@ export function ExportPage() {
       setTeachers(data.teachers)
       setEntries(data.entries)
       setMaxPeriods(data.maxPeriods || 8)
-      setBreaks(data.breaks || [])
       
       if (data.classes.length > 0) setSelectedClassId(data.classes[0].id)
       if (data.teachers.length > 0) setSelectedTeacherId(data.teachers[0].id)
@@ -73,12 +71,6 @@ export function ExportPage() {
   const subjectNameMap = useMemo(() => {
     const map: Record<string, string> = {}
     subjects.forEach(s => { map[s.id] = s.name })
-    return map
-  }, [subjects])
-
-  const subjectColorMap = useMemo(() => {
-    const map: Record<string, string> = {}
-    subjects.forEach(s => { map[s.id] = s.color })
     return map
   }, [subjects])
 
@@ -208,155 +200,33 @@ export function ExportPage() {
     }
   }
 
-  // PDF export - copied from TimetableExport
+  // PDF export - use backend generation
   const handleExportPDF = async (type: 'class' | 'teacher') => {
     setExporting(true)
     try {
-      const html2canvas = (await import('html2canvas')).default
-      const jsPDF = (await import('jspdf')).default
+      const id = type === 'class' ? selectedClassId : selectedTeacherId;
+      if (!id) return;
+
+      const blob = await timetableApi.downloadPDF(type, id, 'zh'); // Defaulting to zh for now, can be dynamic
       
-      // Calculate period start times dynamically based on breaks
-      const startHour = 7
-      const startMinute = 30
-      const periodDuration = 40 // minutes per period
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
       
-      const periodTimes: string[] = []
-      let totalMinutes = startHour * 60 + startMinute
-      
-      for (let p = 1; p <= maxPeriods; p++) {
-        const breakBefore = breaks.find(b => b.afterPeriod === p - 1)
-        if (breakBefore && p > 1) {
-          totalMinutes += breakBefore.duration
-        }
+      const name = type === 'class' 
+        ? classNameMap[id] 
+        : teacherNameMap[id];
         
-        const startH = Math.floor(totalMinutes / 60)
-        const startM = totalMinutes % 60
-        const endMinutes = totalMinutes + periodDuration
-        const endH = Math.floor(endMinutes / 60)
-        const endM = endMinutes % 60
-        
-        periodTimes.push(`${t('time_grid.period_label', { period: p })}\n${String(startH).padStart(2, '0')}:${String(startM).padStart(2, '0')}-${String(endH).padStart(2, '0')}:${String(endM).padStart(2, '0')}`)
-        
-        totalMinutes = endMinutes
-      }
+      link.setAttribute('download', `${name || 'timetable'}.pdf`);
+      document.body.appendChild(link);
+      link.click();
       
-      const title = type === 'class' 
-        ? `${classNameMap[selectedClassId] || ''} ${t('export.class_timetable', '班级课表')}`
-        : `${teacherNameMap[selectedTeacherId] || ''} ${t('export.teacher_timetable', '教师课表')}`
-      
-      // Build HTML for PDF
-      let html = `
-        <html>
-        <head>
-          <meta charset="UTF-8">
-          <style>
-            * { margin: 0; padding: 0; box-sizing: border-box; }
-            body { font-family: Arial, sans-serif; background: #ffffff; padding: 30px; }
-          </style>
-        </head>
-        <body>
-          <h1 style="color: #1a1a1a; font-size: 28px; font-weight: 700; margin-bottom: 20px;">${title}</h1>
-          <table style="border-collapse: collapse; width: 100%;">
-            <thead>
-              <tr>
-                <th style="background: #F5F5F5; padding: 12px 8px; font-weight: 500; color: #666666; border-bottom: 2px solid #E5E5E5; width: 70px;"></th>
-                ${WEEKDAYS.slice(0, 5).map(day => 
-                  `<th style="background: #F5F5F5; padding: 12px 8px; font-weight: 500; color: #555555; border-bottom: 2px solid #E5E5E5; text-align: center;">${t(`weekdays.${day}`)}</th>`
-                ).join('')}
-              </tr>
-            </thead>
-            <tbody>
-      `
-      
-      for (let p = 1; p <= maxPeriods; p++) {
-        const breakBefore = breaks.find(b => b.afterPeriod === p - 1)
-        if (breakBefore && p > 1) {
-          html += `
-            <tr>
-              <td colspan="6" style="background: #555555; color: #ffffff; text-align: center; padding: 8px; font-size: 13px; font-weight: 500;">
-                ${t('export.break', '课间')} (${breakBefore.duration}${t('export.minutes', '分钟')})
-              </td>
-            </tr>
-          `
-        }
-        
-        const timeStr = periodTimes[p - 1] || ''
-        html += `<tr>`
-        html += `<td style="padding: 8px; color: #888888; font-size: 13px; border-bottom: 1px solid #EEEEEE; font-weight: 500;">${timeStr}</td>`
-        
-        for (let d = 1; d <= 5; d++) {
-          const entry = type === 'class' 
-            ? getClassCell(selectedClassId, d, p)
-            : getTeacherCell(selectedTeacherId, d, p)
-          
-          let bgColor = '#F8F8F8'
-          let textColor = '#AAAAAA'
-          let displayText = ''
-          let subText = ''
-          
-          if (entry?.static_name && !entry?.subject_id) {
-            bgColor = '#374151'
-            textColor = '#FFFFFF'
-            displayText = entry.static_name
-          } else if (entry?.subject_id) {
-            const color = subjectColorMap[entry.subject_id] || '#E5E7EB'
-            const hexColor = color.startsWith('#') ? color : '#888888'
-            const r = parseInt(hexColor.slice(1, 3), 16)
-            const g = parseInt(hexColor.slice(3, 5), 16)
-            const b = parseInt(hexColor.slice(5, 7), 16)
-            const bgR = Math.min(255, r + Math.floor((255 - r) * 0.75))
-            const bgG = Math.min(255, g + Math.floor((255 - g) * 0.75))
-            const bgB = Math.min(255, b + Math.floor((255 - b) * 0.75))
-            bgColor = `#${bgR.toString(16).padStart(2, '0')}${bgG.toString(16).padStart(2, '0')}${bgB.toString(16).padStart(2, '0')}`
-            textColor = '#333333'
-            displayText = type === 'class' 
-              ? (subjectNameMap[entry.subject_id] || '')
-              : (classNameMap[entry.class_id!] || '')
-            if (type === 'teacher') {
-              subText = subjectNameMap[entry.subject_id] || ''
-            }
-          }
-          
-          html += `
-            <td style="padding: 8px; text-align: center; border-bottom: 1px solid #EEEEEE;">
-              <div style="background: ${bgColor}; padding: 12px 8px; border-radius: 4px;">
-                <div style="color: ${textColor}; font-weight: 500; font-size: 14px;">${displayText || '-'}</div>
-                ${subText ? `<div style="color: #888888; font-size: 11px; margin-top: 4px;">${subText}</div>` : ''}
-              </div>
-            </td>
-          `
-        }
-        html += `</tr>`
-      }
-      
-      html += `
-            </tbody>
-          </table>
-        </body>
-        </html>
-      `
-      
-      // Create temporary element for PDF generation
-      const container = document.createElement('div')
-      container.innerHTML = html
-      container.style.position = 'absolute'
-      container.style.left = '-9999px'
-      container.style.width = '800px'
-      document.body.appendChild(container)
-      
-      const canvas = await html2canvas(container, { scale: 2, useCORS: true })
-      const imgData = canvas.toDataURL('image/png')
-      
-      const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' })
-      const pageWidth = pdf.internal.pageSize.getWidth()
-      const pageHeight = pdf.internal.pageSize.getHeight()
-      const imgWidth = pageWidth - 20
-      const imgHeight = (canvas.height * imgWidth) / canvas.width
-      
-      pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, Math.min(imgHeight, pageHeight - 20))
-      pdf.save(`${title}.pdf`)
-      
-      document.body.removeChild(container)
+      // Cleanup
+      link.parentNode?.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Failed to export PDF:', err)
+      // Optional: Add toast notification here
     } finally {
       setExporting(false)
     }

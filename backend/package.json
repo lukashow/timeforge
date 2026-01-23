@@ -18,10 +18,13 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@types/pdfkit": "^0.17.4",
     "cors": "^2.8.5",
     "express": "^5.2.1",
     "minizinc": "^4.4.4",
     "nodemon": "^3.1.11",
+    "pdfkit": "^0.17.2",
+    "pdfkit-table": "^0.1.99",
     "pocketbase": "^0.26.6",
     "xlsx": "^0.18.5"
   }

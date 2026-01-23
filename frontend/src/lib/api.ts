@@ -211,6 +211,18 @@ export const timetable = {
     breaks: { afterPeriod: number; name: string; duration: number }[];
     staticCourses: { classId: string; day: number; period: number; name: string; color: string }[];
   }>("/api/timetable/latest"),
+
+  // PDF Export
+  downloadPDF: async (type: 'class' | 'teacher', id: string, language: string = 'zh') => {
+    const response = await fetch(`${API_BASE}/api/export/pdf`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type, id, language })
+    });
+    
+    if (!response.ok) throw new Error("Failed to generate PDF");
+    return response.blob();
+  },
 };
 
 // ============ EXCEL IMPORT/EXPORT ============
@@ -236,6 +248,8 @@ export const excel = {
       method: "POST",
       body: JSON.stringify({ data }),
     }),
+
+
 };
 
 // ============ TIMETABLE GENERATION (MiniZinc) ============

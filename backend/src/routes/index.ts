@@ -11,6 +11,7 @@ import timetableRouter from "./timetable.ts";
 import excelRouter from "./excel.ts";
 import generationRouter from "./generation.ts";
 import authRouter from "./auth.ts";
+import exportRouter from "./export.ts";
 
 const router = Router();
 
@@ -31,5 +32,6 @@ router.use("/api/time-grid", timeGridRouter);
 router.use("/api/timetable", timetableRouter);
 router.use("/api/excel", excelRouter);
 router.use("/api/generation", generationRouter);
+router.use("/api/export", exportRouter);
 
 export default router;
