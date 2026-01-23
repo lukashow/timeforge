@@ -68,9 +68,18 @@ export async function runSolver(input: SolverInput): Promise<SolverResult> {
                 `double_break=${input.FLAG_DOUBLE_PERIOD_NO_RECESS}, ` +
                 `minimize_gaps=${input.FLAG_MINIMIZE_TEACHER_GAPS}`);
 
-    // Run Python solver using uv
+    // Run Python solver using local .venv
+    const venvPython = path.join(path.dirname(SOLVER_PATH), '.venv', 'bin', 'python');
+    
+    // Fallback to system python if venv not found (though init_setup.sh should have created it)
+    const pythonExec = fs.existsSync(venvPython) ? venvPython : 'python3';
+
+    if (!fs.existsSync(venvPython)) {
+      console.warn(`[OR-Tools] Warning: Virtual environment not found at ${venvPython}. Using system python.`);
+    }
+
     const result = await new Promise<SolverResult>((resolve, reject) => {
-      const proc = spawn('uv', ['run', 'python', SOLVER_PATH, inputPath, outputPath], {
+      const proc = spawn(pythonExec, [SOLVER_PATH, inputPath, outputPath], {
         cwd: path.dirname(SOLVER_PATH),
         stdio: ['ignore', 'pipe', 'pipe']
       });
