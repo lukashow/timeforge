@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react'
-import { Input } from '@/components/ui/input'
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Outlet, Link, useLocation, useMatches } from 'react-router-dom'
 import { useEffect } from 'react'

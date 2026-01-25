@@ -253,7 +253,7 @@ export function TeacherAssignment({ onNext, onBack }: StepProps) {
                             onClick={async () => {
                               try {
                                 await assignmentsApi.clearAll();
-                                const newStats = { total: stats.total, assigned: 0, percentage: 0 };
+                                
                                 // Force refresh assignments
                                 setAssignments([]);
                                 // Stats will update on next render via getTotalAssignments
