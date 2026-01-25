@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  timeforge-server:
+    container_name: timeforge-server
+    build: .
+    ports:
+      - "8880:3001"
+    environment:
+      - POCKETBASE_URL=http://timeforge-db:8090
+      - PORT=3001
+    depends_on:
+      - timeforge-db
+    networks:
+      - timeforge_vlan
+
+  timeforge-db:
+    container_name: timeforge-db
+    build:
+      context: .
+      dockerfile: Dockerfile.pocketbase
+    # Security: No ports exposed to host system. 
+    # Only accessible via 'timeforge_vlan' network at port 8090.
+    networks:
+      - timeforge_vlan
+
+networks:
+  timeforge_vlan:
+    driver: bridge

@@ -1,0 +1,9 @@
+node_modules
+.venv
+dist
+.env
+.git
+.gitignore
+README.md
+bun.lockb
+src/or-tools/.venv

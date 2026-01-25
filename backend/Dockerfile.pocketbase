@@ -1,0 +1,12 @@
+FROM ghcr.io/muchobien/pocketbase:latest
+
+# Copy to a custom location to avoid VOLUME masking issues in the base image
+COPY pocketbase/pb_data /pb_custom_data/pb_data
+COPY pocketbase/pb_migrations /pb_custom_data/pb_migrations
+
+# Fix permissions
+RUN chmod -R 777 /pb_custom_data
+
+# Override the default command to point to our custom data directory
+# Base image ENTRYPOINT is already the pocketbase binary, so we only provide arguments
+CMD ["serve", "--http=0.0.0.0:8090", "--dir=/pb_custom_data/pb_data"]

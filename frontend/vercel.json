@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://timeforge-api.mhga.dev/api/:path*"
+    },
+    {
+      "source": "/health",
+      "destination": "https://timeforge-api.mhga.dev/health"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
