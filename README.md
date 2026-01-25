@@ -1,6 +1,8 @@
 <div align="center">
-  <img src="frontend/public/timeforge_logo.svg" alt="TimeForge Logo" width="200" />
   <h1>TimeForge</h1>
+  <img src="timeforge.jpg" alt="TimeForge Banner" width="800" />
+  <br />
+  <br />
 	<img src="https://img.shields.io/badge/React-19.2-blue?style=for-the-badge&logo=react" alt="React" />
 	<img src="https://img.shields.io/badge/TypeScript-5.9-blue?style=for-the-badge&logo=typescript" alt="TypeScript" />
 	<img src="https://img.shields.io/badge/Vite-7.2-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
@@ -12,10 +14,14 @@
 	<img src="https://img.shields.io/badge/Google_OR--Tools-9.10-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Google OR-Tools" />
 </div>
 <div align="center">
-	<img src="frontend/public/screenshot.png" alt="TimeForge Dashboard Placeholder">
 	<h6>Brought to you by <a href="https://mhga.dev">MHGA</a></h6>
 </div>
 
+## Try it Out!
+
+**[Demo Link!](https://timeforge.mhga.dev)**
+
+(credentials are pre-filled!)
 
 ## System Overview
 
