@@ -98,7 +98,23 @@ router.put("/:id/form-teacher", async (req: Request<{ id: string }>, res: Respon
   }
 });
 
-// DELETE /api/classes/:id - Delete class
+// POST /api/classes/clear-form-teachers - Clear all form teachers
+router.post("/clear-form-teachers", async (_req: Request, res: Response) => {
+  try {
+    const classes = await pb.collection("classes").getFullList({ requestKey: null });
+    
+    // Process in batches
+    const promises = classes.map(cls => 
+      pb.collection("classes").update(cls.id, { formTeacher: null })
+    );
+    
+    await Promise.all(promises);
+    res.status(200).json({ message: "Cleared all form teachers" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to clear form teachers" });
+  }
+});
+
 router.delete("/:id", async (req: Request<{ id: string }>, res: Response) => {
   try {
     const classId = req.params.id;

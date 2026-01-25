@@ -194,6 +194,7 @@
     "warning": "There are {{unassigned}} classes waiting, but only {{available}} available teachers",
     "allow_multiple": "Allow a teacher to be form teacher for multiple classes",
     "auto_assign_btn": "Auto-assign form teacher",
+    "clear_assignments": "Clear All Assignments",
     "total_classes": "Total Classes",
     "assigned_teachers": "Assigned Form Teacher",
     "class_list": "Class List",
@@ -206,6 +207,8 @@
     "select_form_teacher": "Select Form Teacher",
     "no_classes": "No classes",
     "use_left_form": "Use the form on the left to generate classes",
+    "clear_confirm_title": "Clear Class Assignments?",
+    "clear_confirm_message": "This will clear all form teacher assignments. This action cannot be undone.",
     "confirm_next": "Confirm Classes, Next"
   },
     "curriculum": {
@@ -353,6 +356,9 @@
     "completion_rate": "Completion Rate",
     "all_assigned": "All assignments completed",
     "auto_assign_btn": "Batch Auto-Assign",
+    "clear_assignments": "Clear All Assignments",
+    "clear_confirm_title": "Clear All Assignments?",
+    "clear_confirm_message": "This will clear all teacher assignments for all subjects. This action cannot be undone.",
     "teacher_load_status": "Teacher Load Status",
     "load_sort_hint": "Sorted by load (High → Low), Max: 25 periods",
     "recommend": "Recommended",

@@ -5,6 +5,27 @@ import type { AssignmentRecord, AssignmentExpanded } from "@/types/pocketbase.d.
 
 const router = Router();
 
+// POST /api/assignments/clear-all - Clear all assignments
+router.post("/clear-all", async (_req: Request, res: Response) => {
+  try {
+    const assignments = await pb.collection("assignments").getFullList({ requestKey: null });
+    
+    // Process in batches
+    // Use requestKey: null to avoid auto-cancellation
+    const batchSize = 50;
+    for (let i = 0; i < assignments.length; i += batchSize) {
+      const batch = assignments.slice(i, i + batchSize);
+      await Promise.all(
+        batch.map(a => pb.collection("assignments").delete(a.id, { requestKey: null }))
+      );
+    }
+    
+    res.status(200).json({ message: "Cleared all assignments" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to clear assignments" });
+  }
+});
+
 // GET /api/assignments - List all assignments (with expands)
 router.get("/", async (_req: Request, res: Response) => {
   try {

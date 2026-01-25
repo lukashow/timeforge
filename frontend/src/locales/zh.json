@@ -203,6 +203,8 @@
     "select_form_teacher": "选择班主任",
     "no_classes": "暂无班级",
     "use_left_form": "使用左侧表单批量生成班级",
+    "clear_confirm_title": "确认清空班级分配？",
+    "clear_confirm_message": "此操作将清空所有班级的班主任分配。此操作不可撤销。",
     "confirm_next": "确认班级，下一步"
   },
   "curriculum": {
@@ -301,6 +303,9 @@
     "completion_rate": "完成率",
     "all_assigned": "所有任课已分配完成",
     "auto_assign_btn": "一键自动分配",
+    "clear_assignments": "清空所有分配",
+    "clear_confirm_title": "确认清空所有分配？",
+    "clear_confirm_message": "此操作将清空所有科目的教师分配。此操作不可撤销。",
     "teacher_load_status": "教师负载状态",
     "load_sort_hint": "按负载排序 (高 → 低)，满载 25 节",
     "recommend": "推荐",

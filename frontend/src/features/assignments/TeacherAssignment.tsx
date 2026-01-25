@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Wand2, User, CheckCircle2, Loader2 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import type { StepProps } from '@/types/common'
 import { subjects as subjectsApi, teachers as teachersApi, classes as classesApi, assignments as assignmentsApi, disciplines as disciplinesApi } from '@/lib/api'
 import type { Subject, Teacher, ClassRecord, Assignment, Discipline } from '@/lib/api'
@@ -217,20 +217,110 @@ export function TeacherAssignment({ onNext, onBack }: StepProps) {
               </div>
 
               {stats.percentage === 100 ? (
-                <div className="p-3 bg-green-50 rounded-lg border border-green-200">
-                  <div className="flex items-center gap-2 text-green-800">
-                    <CheckCircle2 className="w-5 h-5" />
-                    <span className="text-sm font-medium">{t('assignments.all_assigned')}</span>
+                <div className="space-y-3">
+                  <div className="p-3 bg-green-50 rounded-lg border border-green-200">
+                    <div className="flex items-center gap-2 text-green-800">
+                      <CheckCircle2 className="w-5 h-5" />
+                      <span className="text-sm font-medium">{t('assignments.all_assigned')}</span>
+                    </div>
                   </div>
+                  
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 h-8"
+                      >
+                        {t('assignments.clear_assignments', '清空所有分配')}
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>{t('assignments.clear_confirm_title', '确认清空？')}</DialogTitle>
+                      </DialogHeader>
+                      <div className="py-4">
+                        <p className="text-gray-600">
+                          {t('assignments.clear_confirm_message', '此操作将清空所有科目的教师分配。此操作不可撤销。')}
+                        </p>
+                      </div>
+                      <div className="flex justify-end gap-2">
+                        <DialogTrigger asChild>
+                          <Button variant="outline">{t('common.cancel', '取消')}</Button>
+                        </DialogTrigger>
+                        <DialogTrigger asChild>
+                          <Button 
+                            variant="destructive"
+                            onClick={async () => {
+                              try {
+                                await assignmentsApi.clearAll();
+                                const newStats = { total: stats.total, assigned: 0, percentage: 0 };
+                                // Force refresh assignments
+                                setAssignments([]);
+                                // Stats will update on next render via getTotalAssignments
+                              } catch (err) {
+                                console.error('Failed to clear assignments:', err);
+                              }
+                            }}
+                          >
+                            {t('common.confirm', '确认')}
+                          </Button>
+                        </DialogTrigger>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               ) : (
-                <Button
-                  onClick={autoAssignAll}
-                  className="w-full bg-primary hover:bg-purple-700"
-                >
-                  <Wand2 className="w-4 h-4 mr-2" />
-                  {t('assignments.auto_assign_btn')}
-                </Button>
+                <div className="space-y-3">
+                  <Button
+                    onClick={autoAssignAll}
+                    className="w-full bg-primary hover:bg-purple-700"
+                  >
+                    <Wand2 className="w-4 h-4 mr-2" />
+                    {t('assignments.auto_assign_btn')}
+                  </Button>
+
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 h-8"
+                        disabled={stats.assigned === 0}
+                      >
+                        {t('assignments.clear_assignments', '清空所有分配')}
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>{t('assignments.clear_confirm_title', '确认清空？')}</DialogTitle>
+                      </DialogHeader>
+                      <div className="py-4">
+                        <p className="text-gray-600">
+                          {t('assignments.clear_confirm_message', '此操作将清空所有科目的教师分配。此操作不可撤销。')}
+                        </p>
+                      </div>
+                      <div className="flex justify-end gap-2">
+                        <DialogTrigger asChild>
+                          <Button variant="outline">{t('common.cancel', '取消')}</Button>
+                        </DialogTrigger>
+                        <DialogTrigger asChild>
+                          <Button 
+                            variant="destructive"
+                            onClick={async () => {
+                              try {
+                                await assignmentsApi.clearAll();
+                                setAssignments([]); // Clear local state
+                              } catch (err) {
+                                console.error('Failed to clear assignments:', err);
+                              }
+                            }}
+                          >
+                            {t('common.confirm', '确认')}
+                          </Button>
+                        </DialogTrigger>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
               )}
             </div>
           </Card>

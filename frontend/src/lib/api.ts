@@ -148,6 +148,10 @@ export const classes = {
     }),
   delete: (id: string) =>
     fetchAPI<void>(`/api/classes/${id}`, { method: "DELETE" }),
+  clearFormTeachers: () =>
+    fetchAPI<{ message: string }>("/api/classes/clear-form-teachers", {
+      method: "POST",
+    }),
 };
 
 // ============ ASSIGNMENTS ============
@@ -178,6 +182,10 @@ export const assignments = {
     fetchAPI<void>(`/api/assignments/${id}`, { method: "DELETE" }),
   autoAssign: () =>
     fetchAPI<{ created: number; total: number; assignments: Assignment[] }>("/api/assignments/auto-assign", {
+      method: "POST",
+    }),
+  clearAll: () =>
+    fetchAPI<{ message: string }>("/api/assignments/clear-all", {
       method: "POST",
     }),
 };

@@ -283,15 +283,59 @@ export function ClassCreation({ onNext, onBack }: StepProps) {
               </Label>
             </div>
 
-            <Button
-              onClick={autoAssignTeachers}
-              variant="outline"
-              className="w-full text-primary border-primary hover:bg-purple-50"
-              disabled={unassignedCount === 0}
-            >
-              <Users className="w-4 h-4 mr-2" />
-              {t('class.auto_assign_btn')}
-            </Button>
+            <div className="space-y-3">
+              <Button
+                onClick={autoAssignTeachers}
+                variant="outline"
+                className="w-full text-primary border-primary hover:bg-purple-50"
+                disabled={unassignedCount === 0}
+              >
+                <Users className="w-4 h-4 mr-2" />
+                {t('class.auto_assign_btn')}
+              </Button>
+
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 h-8"
+                  >
+                    {t('class.clear_assignments', '清空所有分配')}
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>{t('class.clear_confirm_title', '确认清空？')}</DialogTitle>
+                  </DialogHeader>
+                  <div className="py-4">
+                    <p className="text-gray-600">
+                      {t('class.clear_confirm_message', '此操作将清空所有班级的班主任分配。此操作不可撤销。')}
+                    </p>
+                  </div>
+                  <div className="flex justify-end gap-2">
+                    <DialogTrigger asChild>
+                      <Button variant="outline">{t('common.cancel', '取消')}</Button>
+                    </DialogTrigger>
+                    <DialogTrigger asChild>
+                      <Button 
+                        variant="destructive"
+                        onClick={async () => {
+                          try {
+                            await classesApi.clearFormTeachers();
+                            const updatedClasses = await classesApi.getAll();
+                            setClasses(updatedClasses); // Refresh list
+                          } catch (err) {
+                            console.error('Failed to clear assignments:', err);
+                          }
+                        }}
+                      >
+                        {t('common.confirm', '确认')}
+                      </Button>
+                    </DialogTrigger>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
           </Card>
 
           {/* Stats */}
