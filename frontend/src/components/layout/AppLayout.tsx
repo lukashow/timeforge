@@ -55,12 +55,6 @@ const menuSections: MenuSection[] = [
       { icon: 'tabler:download', labelKey: 'menu.export', path: '/export' },
     ],
   },
-  {
-    titleKey: 'menu.section_admin',
-    items: [
-      { icon: 'tabler:user-cog', labelKey: 'menu.users', path: '/users' },
-    ],
-  },
 ]
 
 export function AppLayout() {
