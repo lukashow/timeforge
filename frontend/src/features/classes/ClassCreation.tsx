@@ -326,9 +326,6 @@ export function ClassCreation({ onNext, onBack }: StepProps) {
                     <div className="flex items-start justify-between mb-3">
                       <div>
                         <h4 className="font-semibold text-gray-900">{cls.name}</h4>
-                        <div className="text-xs text-gray-600 mt-1">
-                          {cls.category} · {cls.discipline}
-                        </div>
                       </div>
                       <Button
                         size="sm"

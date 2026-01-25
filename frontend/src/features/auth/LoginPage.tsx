@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@iconify/react'
 import { Button } from '@/components/ui/button'
@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card } from '@/components/ui/card'
 import { useAuth } from '@/contexts/AuthContext'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
 export function LoginPage() {
   const { t } = useTranslation()
@@ -15,6 +16,15 @@ export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const isDemo = import.meta.env.VITE_IS_DEMO === 'true'
+
+  useEffect(() => {
+    if (isDemo) {
+      setEmail(import.meta.env.VITE_DEMO_USERNAME || '')
+      setPassword(import.meta.env.VITE_DEMO_PASSWORD || '')
+    }
+  }, [isDemo])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -55,6 +65,16 @@ export function LoginPage() {
           </p>
         </div>
 
+        {/* Demo Instance Alert */}
+        {isDemo && (
+          <Alert className="mb-6 bg-primary/10 border-primary/20">
+            <AlertTitle className="text-primary font-semibold">{t('auth.demo_mode', 'Demo Mode')}</AlertTitle>
+            <AlertDescription className="text-primary/90">
+              {t('auth.demo_description', 'This is a demo instance. Credentials have been pre-filled for you.')}
+            </AlertDescription>
+          </Alert>
+        )}
+
         {/* Error Message */}
         {error && (
           <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-3 mb-4">
@@ -82,6 +102,7 @@ export function LoginPage() {
                 placeholder={t('auth.email_placeholder', '请输入邮箱或手机号')}
                 className="pl-12 h-12"
                 required
+                readOnly={isDemo}
               />
             </div>
           </div>
@@ -104,11 +125,13 @@ export function LoginPage() {
                 placeholder={t('auth.password_placeholder', '请输入密码')}
                 className="pl-12 pr-12 h-12"
                 required
+                readOnly={isDemo}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                disabled={isDemo}
               >
                 <Icon 
                   icon={showPassword ? 'tabler:eye-off' : 'tabler:eye'} 
@@ -119,14 +142,16 @@ export function LoginPage() {
           </div>
 
           {/* Forgot Password */}
-          <div className="flex justify-end">
-            <button
-              type="button"
-              className="text-sm text-primary hover:text-primary/80 transition-colors"
-            >
-              {t('auth.forgot_password', '忘记密码？')}
-            </button>
-          </div>
+          {!isDemo && (
+            <div className="flex justify-end">
+              <button
+                type="button"
+                className="text-sm text-primary hover:text-primary/80 transition-colors"
+              >
+                {t('auth.forgot_password', '忘记密码？')}
+              </button>
+            </div>
+          )}
 
           {/* Submit Button */}
           <Button 
@@ -145,35 +170,39 @@ export function LoginPage() {
           </Button>
         </form>
 
-        {/* Divider */}
-        <div className="flex items-center gap-4 my-6">
-          <div className="flex-1 h-px bg-border" />
-          <span className="text-sm text-muted-foreground">
-            {t('auth.or_continue_with', '或其他方式登录')}
-          </span>
-          <div className="flex-1 h-px bg-border" />
-        </div>
+        {!isDemo && (
+          <>
+            {/* Divider */}
+            <div className="flex items-center gap-4 my-6">
+              <div className="flex-1 h-px bg-border" />
+              <span className="text-sm text-muted-foreground">
+                {t('auth.or_continue_with', '或其他方式登录')}
+              </span>
+              <div className="flex-1 h-px bg-border" />
+            </div>
 
-        {/* Social Login */}
-        <div className="flex justify-center gap-4">
-          <button className="w-12 h-12 rounded-xl bg-input flex items-center justify-center hover:bg-muted transition-colors">
-            <Icon icon="logos:google-icon" className="w-5 h-5" />
-          </button>
-          <button className="w-12 h-12 rounded-xl bg-input flex items-center justify-center hover:bg-muted transition-colors">
-            <Icon icon="ic:baseline-wechat" className="w-6 h-6 text-[#07C160]" />
-          </button>
-          <button className="w-12 h-12 rounded-xl bg-input flex items-center justify-center hover:bg-muted transition-colors">
-            <Icon icon="tabler:message" className="w-5 h-5 text-foreground" />
-          </button>
-        </div>
+            {/* Social Login */}
+            <div className="flex justify-center gap-4">
+              <button className="w-12 h-12 rounded-xl bg-input flex items-center justify-center hover:bg-muted transition-colors">
+                <Icon icon="logos:google-icon" className="w-5 h-5" />
+              </button>
+              <button className="w-12 h-12 rounded-xl bg-input flex items-center justify-center hover:bg-muted transition-colors">
+                <Icon icon="ic:baseline-wechat" className="w-6 h-6 text-[#07C160]" />
+              </button>
+              <button className="w-12 h-12 rounded-xl bg-input flex items-center justify-center hover:bg-muted transition-colors">
+                <Icon icon="tabler:message" className="w-5 h-5 text-foreground" />
+              </button>
+            </div>
 
-        {/* Footer */}
-        <p className="text-center text-sm text-muted-foreground mt-8">
-          {t('auth.no_account', '还没有账号？')}
-          <button className="text-primary hover:underline ml-1 font-medium">
-            {t('auth.contact_admin', '联系管理员')}
-          </button>
-        </p>
+            {/* Footer */}
+            <p className="text-center text-sm text-muted-foreground mt-8">
+              {t('auth.no_account', '还没有账号？')}
+              <button className="text-primary hover:underline ml-1 font-medium">
+                {t('auth.contact_admin', '联系管理员')}
+              </button>
+            </p>
+          </>
+        )}
       </Card>
 
       {/* Footer */}

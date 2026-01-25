@@ -55,7 +55,7 @@ router.post("/bulk", async (req: Request, res: Response) => {
     
     for (let i = startNum; i <= endNum; i++) {
       const record = await pb.collection("classes").create<ClassRecord>({
-        name: `${prefix}(${i})班`,
+        name: `${prefix}(${i})`,
         category,
         discipline,
         formTeacher: null,

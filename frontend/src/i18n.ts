@@ -12,7 +12,7 @@ i18n
       en: { translation: en },
       zh: { translation: zh },
     },
-    // lng: 'zh', // Remove hardcoded language to let detector work
+    lng: 'en', // Force default to English
     fallbackLng: "en",
     interpolation: { escapeValue: false },
     detection: {

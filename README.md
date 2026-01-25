@@ -60,6 +60,17 @@ The "Brain" of the scheduling system.
 -   **[jsPDF](https://github.com/parallax/jsPDF)**: PDF generation for Client-side.
 -   **[html2canvas](https://html2canvas.hertzen.com/)**: Screenshots with JavaScript.
 
+### Comparison
+
+| Feature | Legacy School Software | Excel / DIY | TimeForge |
+| :--- | :--- | :--- | :--- |
+| **Interface** | Windows 95/XP style, clunky | Manual Grid | Modern Web, Soft UI, Animated |
+| **Scheduling** | Heuristic (often suboptimal) | Manual (Prone to errors) | **Mathematical Optimization (OR-Tools)** |
+| **Setup** | Complex Enterprise Install | Individual Files | Single Command (`bun dev`), Portable |
+| **Tech Stack** | Java / .NET / PHP | VBA Macros | React 19 / Bun / Python |
+| **Cost Model** | Expensive Licensing | Free but high labor cost | Open Source / Self-Hostable |
+
+
 ## Prerequisites
 
 Before setting up the project, ensure you have the following installed on your system:

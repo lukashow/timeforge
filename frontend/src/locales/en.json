@@ -116,7 +116,9 @@
     "no_account": "Don't have an account?",
     "contact_admin": "Contact Admin",
     "logout": "Log out",
-    "login_error": "Login failed. Please check your email and password."
+    "login_error": "Login failed. Please check your email and password.",
+    "demo_mode": "Demo Mode",
+    "demo_description": "This is a demo instance. Credentials have been pre-filled for you."
   },
   "dashboard": {
     "title": "Dashboard",

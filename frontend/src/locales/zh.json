@@ -115,7 +115,9 @@
     "no_account": "还没有账号？",
     "contact_admin": "联系管理员",
     "logout": "退出登录",
-    "login_error": "登录失败，请检查邮箱和密码"
+    "login_error": "登录失败，请检查邮箱和密码",
+    "demo_mode": "演示模式",
+    "demo_description": "这是一个演示实例，系统已为您自动填充凭证。"
   },
   "dashboard": {
     "title": "仪表盘",
