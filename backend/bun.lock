@@ -8,7 +8,6 @@
         "@types/pdfkit": "^0.17.4",
         "cors": "^2.8.5",
         "express": "^5.2.1",
-        "minizinc": "^4.4.4",
         "nodemon": "^3.1.11",
         "pdfkit": "^0.17.2",
         "pdfkit-table": "^0.1.99",
@@ -340,8 +339,6 @@
     "minipass-pipeline": ["minipass-pipeline@1.2.4", "", { "dependencies": { "minipass": "^3.0.0" } }, "sha512-xuIq7cIOt09RPRJ19gdi4b+RiNvDFYe5JH+ggNvBqGqpQXcru3PcRmOZuHBKWK1Txf9+cQ+HMVN4d6z46LZP7A=="],
 
     "minipass-sized": ["minipass-sized@1.0.3", "", { "dependencies": { "minipass": "^3.0.0" } }, "sha512-MbkQQ2CTiBMlA2Dm/5cY+9SWFEN8pzzOXi6rlM5Xxq0Yqbda5ZQy9sU75a673FE9ZK0Zsbr6Y5iP6u9nktfg2g=="],
-
-    "minizinc": ["minizinc@4.4.4", "", {}, "sha512-gaRuXViW3dAT0srYMYADu8ILizqogwP0wxYN2vp2xYVWDZh9JhNiAu/xVblONCIr+0XCeukNcivw5OERxCrfig=="],
 
     "minizlib": ["minizlib@2.1.2", "", { "dependencies": { "minipass": "^3.0.0", "yallist": "^4.0.0" } }, "sha512-bAxsR8BVfj60DWXHE3u30oHzfl4G7khkSuPW+qvpd7jFRHm7dLxOjUk1EHACJ/hxLY8phGJ0YhYHZo7jil7Qdg=="],
 
